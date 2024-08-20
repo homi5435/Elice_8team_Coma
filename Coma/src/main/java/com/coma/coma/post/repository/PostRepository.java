@@ -68,14 +68,13 @@ public class PostRepository {
 
     // UPDATE
     public Post update(Post post) {
-        String updateSql = "UPDATE post SET title = ?, content = ?, is_delete = ?, modified_date = ? " +
+        String updateSql = "UPDATE post SET title = ?, content = ?, modified_date = ? " +
                 "WHERE post_id = ? AND user_id = ?";  // 게시글 작성자 확인 가능
         post.updateModifiedDate();
 
         jdbcTemplate.update(updateSql,
                 post.getTitle(),
                 post.getContent(),
-                post.getIsDelete(),
                 java.sql.Timestamp.valueOf(post.getModifiedDate()),
                 post.getPostId(),
                 post.getUserId()); // user_id로 게시글 작성자 확인
@@ -94,7 +93,7 @@ public class PostRepository {
 
     // READ - all
     public List<Post> findAll(Long boardId) {
-        String sql = "SELECT * FROM post WHERE board_id = ?";
+        String sql = "SELECT * FROM post WHERE board_id = ? AND is_delete = 'N'";
         return jdbcTemplate.query(sql, new Object[]{boardId}, postRowMapper());
     }
 
@@ -103,7 +102,7 @@ public class PostRepository {
     public Optional<Post> findById(long postId) {
         try {
             Post post = jdbcTemplate.queryForObject(
-                    "SELECT * FROM contact WHERE post_id = ?",
+                    "SELECT * FROM contact WHERE post_id = ? AND is_delete = 'N'",
                     postRowMapper(),
                     postId
             );
@@ -115,8 +114,10 @@ public class PostRepository {
 
     // DELETE
     public void delete(Post post) {
-        String deleteSql = "DELETE FROM post WHERE post_id = ?";
-        Long postId = post.getPostId();
-        jdbcTemplate.update(deleteSql, postId);
+        String deleteSql = "UPDATE post SET is_delete = 'Y', modified_date = ? WHERE post_id = ?";
+        post.updateModifiedDate();      // update modified date
+        jdbcTemplate.update(deleteSql,
+                java.sql.Timestamp.valueOf(post.getModifiedDate()),
+                post.getPostId());
     }
 }
