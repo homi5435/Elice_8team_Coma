@@ -110,7 +110,7 @@ public class PostRepository {
     public Optional<Post> findById(long postId) {
         try {
             Post post = jdbcTemplate.queryForObject(
-                    "SELECT * FROM contact WHERE post_id = ? AND is_delete = 'N'",
+                    "SELECT * FROM post WHERE post_id = ? AND is_delete = 'N'",
                     postRowMapper(),
                     postId
             );
