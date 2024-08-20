@@ -7,7 +7,7 @@
   <script>
     function handleLoginResponse(response) {
       if (response.ok) {
-        window.location.href = "/api/boards";
+        window.location.href = "/boards";
       } else {
         alert("로그인 실패: 아이디나 비밀번호를 확인하세요.");
       }
@@ -49,7 +49,7 @@
     <a href="/forgot-password">비밀번호 찾기</a>
   </div>
   <div class="signup-link">
-    계정을 가지고 계시지 않습니까? <a href="/signup">회원가입</a>
+    계정을 가지고 계시지 않습니까? <a href="/users/register">회원가입</a>
   </div>
 </div>
 </body>

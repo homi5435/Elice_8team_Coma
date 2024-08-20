@@ -3,15 +3,21 @@ package com.coma.coma.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.function.Function;
+import java.util.Base64;
+
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "your_secret_key";
+    //private final String SECRET_KEY = Base64.getEncoder().encodeToString("your_secret_key".getBytes());
+    private final String SECRET_KEY = Base64.getEncoder()
+            .encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256)
+                    .getEncoded());
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
