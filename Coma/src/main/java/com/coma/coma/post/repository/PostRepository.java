@@ -68,9 +68,17 @@ public class PostRepository {
 
     // UPDATE
     public Post update(Post post) {
+        String checkDeletedSql = "SELECT is_delete FROM user_post WHERE post_id = ?";
+        String checkDelete = jdbcTemplate.queryForObject(checkDeletedSql, String.class, post.getPostId());
+
+        if("Y".equals(checkDelete)) {
+            throw new EmptyResultDataAccessException("삭제된 게시글입니다.", 1);
+        }
+
         String updateSql = "UPDATE post SET title = ?, content = ?, modified_date = ? " +
-                "WHERE post_id = ? AND user_id = ?";  // 게시글 작성자 확인 가능
+                "WHERE post_id = ? AND user_id = ?";  // 게시글 작성자 확인 기능
         post.updateModifiedDate();
+
 
         jdbcTemplate.update(updateSql,
                 post.getTitle(),
