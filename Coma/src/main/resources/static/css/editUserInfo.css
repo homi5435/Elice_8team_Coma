@@ -52,18 +52,43 @@ input[type="text"]:focus, input[type="password"]:focus {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
+
 button {
-    width: 100%;
+    width: 48%;
     padding: 10px;
-    background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 20px;
 }
 
 button:hover {
-    background-color: #0056b3;
+    opacity: 0.9;
+}
+
+.update{
+    background-color: #007bff;
+}
+
+.cancel-button {
+    background-color: #6c757d;
+}
+
+.delete-button {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #dc3545;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 15px;
 }

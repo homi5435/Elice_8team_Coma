@@ -50,6 +50,27 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // 사용자 정보 업데이트
+    public void updateUser(String oldId, String newId, String name, String phoneNumber, String password) {
+        Users user = userRepository.findByUserIdName(oldId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + oldId));
+
+        if (!oldId.equals(newId) && checkDuplicateId(newId)) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        user.setId(newId);
+        user.setName(name);
+        user.setPhoneNumber(phoneNumber);
+
+        if (password != null && !password.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
+
+        userRepository.update(user);
+    }
+
+
     public boolean checkDuplicateId(String id) {
         return userRepository.existsById(id);
     }

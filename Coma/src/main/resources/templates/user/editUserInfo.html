@@ -10,6 +10,7 @@
   <div class="form-container">
     <h2>회원정보 수정</h2>
     <form th:action="@{/users/update/{id}(id=${user.id})}" method="post">
+      <div th:if="${error}" class="error-message" th:text="${error}"></div>
       <div class="form-group">
         <label for="id">아이디</label>
         <input type="text" id="id" th:value="${user.id}" name="id" required>
@@ -26,7 +27,13 @@
         <label for="password">비밀번호</label>
         <input type="password" id="password" name="password" placeholder="변경할 비밀번호를 입력하세요">
       </div>
-      <button type="submit">저장</button>
+      <div class="button-group">
+        <button class ="update" type="submit">저장</button>
+        <button type="button" class="cancel-button" onclick="window.history.back();">취소</button>
+      </div>
+    </form>
+    <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post">
+      <button type="submit" class="delete-button">탈퇴</button>
     </form>
   </div>
 </div>

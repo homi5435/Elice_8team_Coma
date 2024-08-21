@@ -80,5 +80,11 @@ public class UserRepositoryImpl implements UserRepository {
         return count != null && count > 0;
     }
 
+    @Override
+    public void update(Users user) {
+        String sql = "UPDATE Users SET id = ?, name = ?, phone_number = ?, password = ?, modified_date = CURRENT_TIMESTAMP WHERE user_id = ?";
+        jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPhoneNumber(), user.getPassword(), user.getUserId());
+    }
+
 
 }

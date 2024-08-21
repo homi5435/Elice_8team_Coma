@@ -11,4 +11,5 @@ public interface UserRepository {
 
     void save(Users user);  // 사용자 저장 메서드 추가
     boolean existsById(String id); // 아이디 중복체크 메서드
+    void update(Users user);
 }

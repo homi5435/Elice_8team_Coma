@@ -72,22 +72,6 @@ public class UserApiController {
         return ResponseEntity.ok().build();
     }
 
-    /*
-    // 회원정보 삭제
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int user_id) {
-        userService.deleteUser(user_id);  // 회원정보 삭제 로직
-        return ResponseEntity.noContent().build();
-    }
-
-    // 회원정보 수정
-    @PutMapping("/{user_id}")
-    public ResponseEntity<Void> updateUser(@PathVariable int user_id, @RequestBody UserDto userDto) {
-        userService.updateUser(user_id, userDto);  // 회원정보 수정 로직
-        return ResponseEntity.ok().build();
-    }
-     */
-
     // 아이디 중복 체크 API
     @GetMapping("/check-id/{id}")
     public ResponseEntity<Boolean> checkDuplicateId(@PathVariable String id) {
