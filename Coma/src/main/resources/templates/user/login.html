@@ -19,17 +19,30 @@
       const id = document.getElementById("id").value;
       const password = document.getElementById("password").value;
 
-      const response = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id, password })
-      });
+      try {
+        const response = await fetch("/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ id, password })
+        });
 
-      handleLoginResponse(response);
+        const data = await response.json();
+        console.log("Response Data:", data);
+
+        if (response.ok && data.jwt) {
+          localStorage.setItem('token', data.jwt);
+          handleLoginResponse(response);
+        } else {
+          alert("로그인 실패: 아이디나 비밀번호를 확인하세요.");
+        }
+      } catch (error) {
+        alert("로그인 중 문제가 발생했습니다.");
+      }
     }
   </script>
+
 </head>
 <body>
 <div class="login-container">
