@@ -33,6 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            //Bearer 이후의 문자열 (즉, 실제 JWT 토큰)을 추출
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
         }
