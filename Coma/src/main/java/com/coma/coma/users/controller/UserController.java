@@ -62,5 +62,9 @@ public class UserController {
         }
     }
 
-
+    @PostMapping("/users/delete/{id}")
+    public String deleteUserInfo(@PathVariable("id") String id) {
+        userService.deleteUser(id);
+        return "redirect:/api/boards";
+    }
 }

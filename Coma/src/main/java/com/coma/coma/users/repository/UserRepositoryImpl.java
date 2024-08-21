@@ -86,5 +86,9 @@ public class UserRepositoryImpl implements UserRepository {
         jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPhoneNumber(), user.getPassword(), user.getUserId());
     }
 
-
+    @Override
+    public void delete(Users user) {
+        String sql = "DELETE FROM Users WHERE id = ?";
+        jdbcTemplate.update(sql, user.getId());
+    }
 }

@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>Edit User Information</title>
   <link rel="stylesheet" th:href="@{/css/editUserInfo.css}">
+  <script>
+    function confirmDeletion() {
+      return confirm("정말로 탈퇴하시겠습니까?");
+    }
+  </script>
 </head>
 <body>
 <div class="container">
@@ -32,7 +37,7 @@
         <button type="button" class="cancel-button" onclick="window.history.back();">취소</button>
       </div>
     </form>
-    <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post">
+    <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" onsubmit="return confirmDeletion();">
       <button type="submit" class="delete-button">탈퇴</button>
     </form>
   </div>

@@ -71,6 +71,15 @@ public class UserService {
     }
 
 
+    public void deleteUser(String id) {
+        Optional<Users> user = userRepository.findByUserIdName(id);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+        } else {
+            throw new IllegalArgumentException("User not found with id: " + id);
+        }
+    }
+
     public boolean checkDuplicateId(String id) {
         return userRepository.existsById(id);
     }
