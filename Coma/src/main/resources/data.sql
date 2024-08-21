@@ -16,3 +16,4 @@ VALUES (2, 'Users', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO board
 (board_title, board_description, created_date)
 VALUES('게시판 이름', '게시판 설명', CURRENT_TIMESTAMP);
+
