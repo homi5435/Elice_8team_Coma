@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -62,13 +63,15 @@ public class PostRepository {
             return ps;
         }, keyHolder);
 
-        post.setPostId(keyHolder.getKey().longValue());  // post_id 설정
-        return post;
+        Map<String, Object> keys = keyHolder.getKeys();
+        if (keys != null && keys.containsKey("POST_ID")) {
+            post.setPostId(((Number) keys.get("POST_ID")).longValue());  // Set the generated post_id
+        }        return post;
     }
 
     // UPDATE
     public Post update(Post post) {
-        String checkDeletedSql = "SELECT is_delete FROM user_post WHERE post_id = ?";
+        String checkDeletedSql = "SELECT is_delete FROM post WHERE post_id = ?";
         String checkDelete = jdbcTemplate.queryForObject(checkDeletedSql, String.class, post.getPostId());
 
         if("Y".equals(checkDelete)) {
