@@ -24,6 +24,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
+    // Spring Security의 핵심 설정을 담당 HttpSecurity 객체를 통해 다양한 보안 설정을 정의
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -39,7 +40,10 @@ public class SecurityConfig {
     }
 
 
+
     @Bean
+    // AuthenticationManager를 설정
+    // AuthenticationManager는 Spring Security에서 인증을 담당하는 핵심 컴포넌트
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
         auth.userDetailsService(customUserDetailsService)
@@ -48,6 +52,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    // 비밀번호를 안전하게 해싱하고 저장
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

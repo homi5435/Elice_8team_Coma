@@ -1,6 +1,6 @@
 package com.coma.coma.users.controller;
 
-//import com.coma.coma.security.JwtUtil;
+import com.coma.coma.security.JwtUtil;
 import com.coma.coma.users.dto.*;
 import com.coma.coma.users.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class UserApiController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    // private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     // 사용자 정보 조회
     @GetMapping("/{user_id}")
@@ -47,7 +47,6 @@ public class UserApiController {
     }
 
     // 로그인
-    /*
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto) {
         try {
@@ -65,11 +64,6 @@ public class UserApiController {
     }
 
 
-    @GetMapping("/login-success")
-    public String loginSuccess() {
-        return "redirect:/api/boards"; // 로그인 성공 시 /api/boards로 리다이렉트
-    }
-
 
     // 로그아웃
     @PostMapping("/logout")
@@ -77,7 +71,7 @@ public class UserApiController {
         // 로그아웃 로직
         return ResponseEntity.ok().build();
     }
-
+    /*
     // 회원정보 삭제
     @DeleteMapping("/{user_id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int user_id) {
