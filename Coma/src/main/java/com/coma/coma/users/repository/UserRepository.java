@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface UserRepository {
     UserResponseDto getUserByUserId(int id);
-    // 로그인 코드 수정 중
     Optional<Users> findByUserIdName(String id);
 
     void save(Users user);  // 사용자 저장 메서드 추가

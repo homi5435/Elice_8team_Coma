@@ -43,15 +43,7 @@ public class UserService {
         // DB에 사용자 저장
         userRepository.save(user);
     }
-    /*
-    public void deleteUser(int id) {
-        // 회원 삭제 로직
-    }
 
-    public void updateUser(int id, UserDto userDto) {
-        // 회원 정보 업데이트 로직
-    }
-    */
     public boolean checkDuplicateId(String id) {
         return userRepository.existsById(id);
     }
