@@ -9,8 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostRequestDto {
 
+    private Long postId;
+    private Long userId;
+    private Long groupId;
     private Long boardId;
     private String title;
     private String content;
+    private String isDelete;
 
 }
