@@ -1,8 +1,8 @@
-package com.coma.coma.Controller;
+package com.coma.coma.comments.Controller;
 
-import com.coma.coma.Dto.CommentDto;
-import com.coma.coma.Entity.Comment;
-import com.coma.coma.Service.CommentService;
+import com.coma.coma.comments.Dto.CommentDto;
+import com.coma.coma.comments.Entity.Comment;
+import com.coma.coma.comments.Service.CommentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
-package com.coma.coma.Service;
+package com.coma.coma.comments.Service;
 
 
-import com.coma.coma.Dto.CommentDto;
-import com.coma.coma.Entity.Comment;
-import com.coma.coma.Repository.CommentRepository;
+import com.coma.coma.comments.Dto.CommentDto;
+import com.coma.coma.comments.Entity.Comment;
+import com.coma.coma.comments.Repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

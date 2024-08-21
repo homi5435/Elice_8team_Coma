@@ -1,7 +1,7 @@
-package com.coma.coma.Repository;
+package com.coma.coma.comments.Repository;
 
-import com.coma.coma.Dto.CommentDto;
-import com.coma.coma.Entity.Comment;
+import com.coma.coma.comments.Dto.CommentDto;
+import com.coma.coma.comments.Entity.Comment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;

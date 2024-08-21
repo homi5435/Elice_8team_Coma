@@ -1,4 +1,4 @@
-package com.coma.coma.Entity;
+package com.coma.coma.comments.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.coma.coma.Dto;
+package com.coma.coma.comments.Dto;
 
 import lombok.*;
 
