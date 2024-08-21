@@ -35,4 +35,13 @@ public class UserViewController {
         return "user/userInfo";  // userinfo.html 템플릿을 반환
     }
 
+    @GetMapping("/users/edit/{id}")
+    public String editUserInfo(@PathVariable("id") String id, Model model) {
+        UserResponseDto user = userService.getUserById(id);
+        model.addAttribute("user", user);
+
+        return "user/editUserInfo";  // editUserInfo.html 템플릿을 반환
+    }
+
+
 }
