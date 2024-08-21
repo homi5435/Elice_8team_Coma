@@ -19,3 +19,13 @@ CREATE TABLE Users (
                        signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE board (
+  board_id bigint NOT NULL AUTO_INCREMENT,
+  board_title varchar(255) NOT NULL,
+  board_description varchar(255) NOT NULL,
+  is_delete char(1) NOT NULL DEFAULT 'N',
+  created_date timestamp NULL DEFAULT NULL,
+  modified_date timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (board_id)
+);
+
