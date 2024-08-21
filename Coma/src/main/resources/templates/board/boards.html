@@ -20,32 +20,36 @@
     <style>
         html,
         body {
-          font-family: "Elice DX Neolli", sans-serif;
+            font-family: "Elice DX Neolli", sans-serif;
         }
 
         .card {
-          transition: all 0.1s ease-in-out;
+            transition: all 0.1s ease-in-out;
         }
 
         .card:hover {
-          transform: scale(1.01);
+            transform: scale(1.01);
         }
 
         .board-item:hover {
-          cursor: pointer;
+            cursor: pointer;
         }
 
         .board-item > .btn-group {
-          display: none;
+            display: none;
         }
 
         .board-item:hover > .btn-group {
-          display: flex;
+            display: flex;
         }
     </style>
     <title>게시판</title>
 </head>
 <body>
+
+<!-- 공통 헤더 포함 -->
+<div th:replace="~{fragments/header :: header}"></div>
+
 <div class="container my-5">
     <div class="header mb-5">
         <h1 class="text-center">게시판 목록</h1>
@@ -166,14 +170,14 @@
     let currentBoard;
 
     function handleDeleteButton(e, boardId) {
-      e.preventDefault();
-      currentBoard = boardId;
+        e.preventDefault();
+        currentBoard = boardId;
     }
 
     function handleDeleteModalButton() {
-      fetch(`/api/boards/${currentBoard}`, {
-        method: "DELETE",
-      }).then(() => (window.location.href = "/api/boards"));
+        fetch(`/api/boards/${currentBoard}`, {
+            method: "DELETE",
+        }).then(() => (window.location.href = "/api/boards"));
     }
 </script>
 
