@@ -36,9 +36,9 @@ CREATE TABLE board (
 
 -- Create the post table
 CREATE TABLE post (
-                      post_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                      user_id BIGINT NOT NULL,
-                      group_id BIGINT NOT NULL,
+                      post_id INT AUTO_INCREMENT PRIMARY KEY,
+                      user_id INT NOT NULL,
+                      group_id INT NOT NULL,
                       board_id BIGINT NOT NULL,
                       title VARCHAR(255) NOT NULL,
                       content TEXT NOT NULL,

@@ -82,7 +82,7 @@
                 class="btn btn-outline-primary lh-1"
                 data-bs-toggle="modal"
                 data-bs-target="#editCommentModal"
-                th:onclick="handleEditCommentButton(event, [[${comment.id}]], [[${comment.content}]]);"
+                th:onclick="handleEditCommentButton(event, [[${comment.commentId}]], [[${comment.content}]]);"
             >
               <span class="material-symbols-outlined"> edit </span>
             </button>
@@ -90,7 +90,7 @@
                 class="btn btn-outline-danger lh-1"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteCommentModal"
-                th:onclick="handleDeleteCommentButton(event, [[${comment.id}]]);"
+                th:onclick="handleDeleteCommentButton(event, [[${comment.commentId}]]);"
             >
               <span class="material-symbols-outlined"> delete </span>
             </button>

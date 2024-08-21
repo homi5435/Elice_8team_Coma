@@ -23,7 +23,7 @@ public class PostService {
     }
 
     // postId로 Post 가져오기
-    public Post findPost(Long postId) {
+    public Post findPost(int postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new NoSuchElementException());
     }
@@ -34,7 +34,7 @@ public class PostService {
     }
 
     // Id 이용해서 Post 삭제
-    public void deletePost(Long postId) {
+    public void deletePost(int postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException());
 
         postRepository.delete(post);

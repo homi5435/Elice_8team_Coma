@@ -30,9 +30,9 @@ public class PostRepository {
     private RowMapper<Post> postRowMapper() {
         return (rs, rowNum) -> {
             Post post = new Post();
-            post.setPostId(rs.getLong("post_id"));
-            post.setUserId(rs.getLong("user_id"));    // 추가
-            post.setGroupId(rs.getLong("group_id"));  // 추가
+            post.setPostId(rs.getInt("post_id"));
+            post.setUserId(rs.getInt("user_id"));    // 추가
+            post.setGroupId(rs.getInt("group_id"));  // 추가
             post.setBoardId(rs.getLong("board_id"));
             post.setTitle(rs.getString("title"));
             post.setContent(rs.getString("content"));
@@ -65,7 +65,7 @@ public class PostRepository {
 
         Map<String, Object> keys = keyHolder.getKeys();
         if (keys != null && keys.containsKey("POST_ID")) {
-            post.setPostId(((Number) keys.get("POST_ID")).longValue());  // Set the generated post_id
+            post.setPostId(((Number) keys.get("POST_ID")).intValue());  // Set the generated post_id
         }        return post;
     }
 
@@ -95,7 +95,7 @@ public class PostRepository {
 
     // SAVE
     public Post save(Post post) {
-        if (post.getPostId() == null) {
+        if (post.getPostId() == 0) {
             return create(post);  // post_id가 없으면 새로 생성
         } else {
             return update(post);  // 있으면 업데이트

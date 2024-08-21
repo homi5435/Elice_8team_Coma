@@ -39,7 +39,7 @@ public class PostController {
 
     // 게시글 상세 페이지
     @GetMapping("/{postId}")
-    public String getPost(@PathVariable("postId") Long postId, Model model) {
+    public String getPost(@PathVariable("postId") int postId, Model model) {
         Post post = postService.findPost(postId);
         List<Comment> comments = commentService.getCommentsByPostId(Math.toIntExact(postId));
         model.addAttribute("post", post);
@@ -60,8 +60,8 @@ public class PostController {
         // TODO: Mapper 이용해서 처리
         // TODO: User, Group 관련 처리 필요
         Post post = new Post();
-        post.setUserId(1L);
-        post.setGroupId(1L);
+        post.setUserId(1);
+        post.setGroupId(1);
         post.setBoardId(postRequestDto.getBoardId());
         post.setTitle(postRequestDto.getTitle());
         post.setContent(postRequestDto.getContent());
@@ -72,7 +72,7 @@ public class PostController {
 
     // 게시물 수정 페이지 이동
     @GetMapping("/{postId}/edit")
-    public String editPostPage(@PathVariable("postId") Long postId, Model model) {
+    public String editPostPage(@PathVariable("postId") int postId, Model model) {
         Post post = postService.findPost(postId);
         model.addAttribute("post", post);
         return "post/editPost";
@@ -80,7 +80,7 @@ public class PostController {
 
     // 게시물 수정 요청
     @PostMapping("/{postId}/update")
-    public String updatePost(@PathVariable Long postId, @ModelAttribute PostRequestDto postRequestDto) {
+    public String updatePost(@PathVariable int postId, @ModelAttribute PostRequestDto postRequestDto) {
         Post post = postService.findPost(postId);
         post.setTitle(postRequestDto.getTitle());
         post.setContent(postRequestDto.getContent());
@@ -91,7 +91,7 @@ public class PostController {
 
     // 게시물 삭제 요청
     @GetMapping("/delete/{postId}")
-    public String deletePost(@PathVariable Long postId) {
+    public String deletePost(@PathVariable int postId) {
         Post post = postService.findPost(postId);
         Long boardId = post.getBoardId();
         postService.deletePost(postId);
