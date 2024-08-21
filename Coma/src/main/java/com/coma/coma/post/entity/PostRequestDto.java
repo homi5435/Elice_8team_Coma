@@ -9,12 +9,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostRequestDto {
 
-    private Long postId;
+    // 유저 정보
     private Long userId;
     private Long groupId;
+
+    // 게시판 정보
     private Long boardId;
+
+    // User로부터 입력받은 게시글 정보
     private String title;
     private String content;
-    private String isDelete;
 
 }
