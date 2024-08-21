@@ -37,7 +37,7 @@ public class CommentRepository {
             Comment comment = new Comment();
             comment.setCommentId(rs.getInt("comment_id"));
             comment.setCommentUserId(rs.getInt("comment_user_id"));
-            comment.setCommentPostId(rs.getInt("post_id"));
+            comment.setCommentPostId(rs.getInt("comment_post_id"));
             comment.setContent(rs.getString("content"));
             comment.setIsDelete(rs.getString("is_delete"));
             comment.setModifiedDate(rs.getTimestamp("modified_date"));
