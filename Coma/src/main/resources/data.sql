@@ -11,3 +11,8 @@ VALUES (2, 'Users', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 --INSERT INTO Users (user_id, group_id, id, password, name, phone_number, is_delete, modified_date, signup_date)
 --VALUES (2, 2, 'user1', 'user123', 'John Doe', '010-9876-5432', 'N', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- board 테이블 초기 데이터 삽입
+INSERT INTO board
+(board_title, board_description, created_date)
+VALUES('게시판 이름', '게시판 설명', CURRENT_TIMESTAMP);
