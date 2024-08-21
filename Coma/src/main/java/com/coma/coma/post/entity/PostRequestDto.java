@@ -10,8 +10,8 @@ import lombok.Setter;
 public class PostRequestDto {
 
     // 유저 정보
-    private Long userId;
-    private Long groupId;
+    private int userId;
+    private int groupId;
 
     // 게시판 정보
     private Long boardId;
