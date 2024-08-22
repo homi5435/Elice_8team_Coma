@@ -95,7 +95,7 @@ public class PostRepository {
 
     // SAVE
     public Post save(Post post) {
-        if (post.getPostId() == 0) {
+        if (post.getPostId() == null) {
             return create(post);  // post_id가 없으면 새로 생성
         } else {
             return update(post);  // 있으면 업데이트
