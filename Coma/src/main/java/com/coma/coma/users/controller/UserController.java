@@ -1,5 +1,6 @@
 package com.coma.coma.users.controller;
 
+import com.coma.coma.security.JwtUtil;
 import com.coma.coma.security.CustomUserDetails;
 import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.service.UserService;
@@ -14,11 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
 
+    private final JwtUtil jwtUtil;
     private final UserService userService;
 
     @GetMapping("users/login")
@@ -78,9 +83,19 @@ public class UserController {
                                  @RequestParam("name") String name,
                                  @RequestParam("phoneNumber") String phoneNumber,
                                  @RequestParam("password") String password,
-                                 Model model) {
+                                 Model model,  HttpServletResponse response) {
         try {
             userService.updateUser(oldId, newId, name, phoneNumber, password);
+
+            // 새로운 JWT 토큰 발행 (선택 사항)
+            String newToken = jwtUtil.generateToken(newId);
+            Cookie cookie = new Cookie("jwtToken", newToken);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60); // 1일
+            // 응답에 쿠키 추가
+            response.addCookie(cookie);
+
             return "redirect:/users/" + newId;
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -90,8 +105,16 @@ public class UserController {
     }
 
     @PostMapping("/users/delete/{id}")
-    public String deleteUserInfo(@PathVariable("id") String id) {
+    public String deleteUserInfo(@PathVariable("id") String id, HttpServletResponse response) {
         userService.deleteUser(id);
+
+        // 쿠키 삭제
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 쿠키 즉시 만료
+        response.addCookie(cookie);
+
         return "redirect:/api/boards";
     }
 }
