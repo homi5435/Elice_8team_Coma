@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+    <link
+            href="https://font.elice.io/css?family=Elice+DX+Neolli"
+            rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        html,
+        body {
+          font-family: "Elice DX Neolli", sans-serif;
+        }
+    </style>
+    <title>게시판 추가</title>
+</head>
+<body>
+<div class="container my-5">
+    <div class="header mb-5">
+        <h1 class="text-center">게시판 추가v2</h1>
+    </div>
+    <form>
+        <div class="mb-3">
+            <label for="board_title">게시판 이름</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="board_title"
+                    name="board_title"
+                    maxlength="20"
+                    placeholder="게시판 이름 입력 (최대 20자)"
+                    required
+            />
+        </div>
+        <div class="mb-3">
+            <label for="board_description">게시판 설명</label>
+            <textarea
+                    class="form-control"
+                    id="board_description"
+                    name="board_description"
+                    maxlength="200"
+                    placeholder="게시판 설명 입력 (최대 200자)"
+            ></textarea>
+        </div>
+        <button onclick="createPost(event)" class="btn btn-primary">게시판 추가</button>
+        <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="window.history.back();"
+        >
+            취소
+        </button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    const createPost=(event)=>{
+        console.log("12345jkasdfghjka123");
+        event.preventDefault();
+        const board_title = document.querySelector('#board_title').value;
+        const board_description = document.querySelector('#board_description').value;
+        const send_param = {
+            board_title,
+            board_description
+        }
+         axios.post('/api/v2/boards', send_param)
+            .then(function(response) {
+              console.log(response);
+              window.location.href = "/api/boards"
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+    }
+</script>
+<!-- 부트스트랩 JS 추가 -->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"
+>
+</script>
+</body>
+</html>
