@@ -52,7 +52,7 @@
                     th:text="${board.board_description}"
             ></textarea>
         </div>
-        <button onclick="modifyPost(event)" class="btn btn-primary">게시판 수정</button>
+        <button onclick="modifyPost(event)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">게시판 수정</button>
         <button
                 type="button"
                 class="btn btn-secondary"
@@ -63,6 +63,36 @@
         <input type="hidden" id="boardId" th:value="${board.board_id}">
     </form>
 </div>
+
+
+<div
+        class="modal fade"
+        id="updateModal"
+        tabindex="-1"
+        aria-labelledby="updateModalLabel"
+        aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="updateModalLabel">
+                    오류
+                </h1>
+                <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-light" id="errorList">게시판에 포함된 모든 게시글이 삭제됩니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
     const modifyPost=(event)=>{
         event.preventDefault();
@@ -81,6 +111,23 @@
             })
             .catch(function(error) {
               console.log(error);
+
+              const errorData = error.response.data;
+
+              // 데이터를 표시할 HTML 요소를 찾습니다.
+              const resultDiv = document.getElementById('errorList');
+              console.log("errorData : ", errorData);
+
+              // 기존의 내용을 비웁니다.
+              resultDiv.innerHTML = '';
+
+              // 데이터를 반복하면서 화면에 추가합니다.
+              errorData.forEach(data => {
+                      // 각 데이터 항목을 하나의 HTML 블록으로 만들어서 추가합니다.
+                      const item = document.createElement('div');
+                      item.innerHTML = `<p>${data.fieldName} : ${data.message}</p>`;
+                      resultDiv.appendChild(item);
+                  });
             });
     }
 
