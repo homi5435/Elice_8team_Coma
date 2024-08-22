@@ -4,6 +4,7 @@ import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
 import com.coma.coma.comments.Entity.Comment;
 import com.coma.coma.comments.Service.CommentService;
+import com.coma.coma.post.dto.Page;
 import com.coma.coma.post.dto.PostResponseDto;
 import com.coma.coma.post.service.PostService;
 import org.springframework.stereotype.Controller;
@@ -27,20 +28,24 @@ public class PostController {
         this.commentService = commentService;
     }
 
-    // 게시물 목록 페이지
+    // 게시물 목록 페이지 - 페이지네이션 적용
     @GetMapping("/list/{boardId}")
     public String getPosts(@PathVariable("boardId") Long boardId,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "10") int size,
                            @RequestParam(value = "keyword", required = false) String keyword,
                            Model model) {
-        List<PostResponseDto> posts;
-        if (keyword != null) {
-            posts = postService.findByKeyword(boardId, keyword);
+        Page<PostResponseDto> posts;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            posts = postService.findByKeywordWithPagination(boardId, keyword, page, size);
         } else {
-            posts = postService.findAll(boardId);
+            posts = postService.getPostsWithPagination(boardId, page, size);
         }
         Board board = boardService.findOne(boardId);
         model.addAttribute("posts", posts);
         model.addAttribute("board", board);
+        model.addAttribute("keyword", keyword);
         return "board/board";
     }
 

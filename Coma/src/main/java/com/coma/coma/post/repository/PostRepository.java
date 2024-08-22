@@ -145,4 +145,57 @@ public class PostRepository {
                 postRowMapper()
         );
     }
+
+
+    // Pagination 적용
+    // READ - pagination
+    public List<Post> getPostsWithPagination(Long boardId, int page, int size) {
+        int offset = Math.max((page - 1) * size, 0); // 페이지 번호가 1부터 시작하는 경우
+        String sql = "SELECT * FROM post " +
+                "WHERE board_id = ? " +
+                "AND is_delete = 'N' " +
+                "ORDER BY created_date DESC " +
+                "LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, new Object[]{boardId, size, offset}, postRowMapper());
+    }
+
+
+    // 게시판에 존재하는 총 데이터 갯수 조회
+    public int countPostsInBoard(Long boardId) {
+        String sql = "SELECT count(*) FROM post WHERE board_id = ? AND is_delete = 'N'";
+        return jdbcTemplate.queryForObject(sql, new Object[]{boardId}, Integer.class);
+    }
+
+    // 검색 결과 총 데이터 갯수 조회
+    public int countPostsInSearchResult(Long boardId, String keyword) {
+        String sql = "SELECT count(*) FROM post " +
+                "WHERE board_id = ? " +
+                "AND is_delete = 'N' " +
+                "AND (Lower(title) LIKE Lower(?) OR Lower(content) LIKE Lower(?))";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{
+                boardId,
+                "%" + keyword + "%",
+                "%" + keyword + "%"
+        }, Integer.class);
+    }
+
+    // search - with keyword and pagination
+    public List<Post> findByKeywordWithPagination(Long boardId, String keyword, int page, int size) {
+        int offset = Math.max((page - 1) * size, 0);
+        String sql = "SELECT * FROM post " +
+                "WHERE board_id = ? " +
+                "AND is_delete = 'N' " +
+                "AND (Lower(title) LIKE Lower(?) OR Lower(content) LIKE Lower(?)) " +
+                "ORDER BY created_date DESC " +
+                "LIMIT ? OFFSET ?";
+
+        return jdbcTemplate.query(sql, new Object[]{
+                boardId,
+                "%" + keyword + "%",
+                "%" + keyword + "%",
+                size,
+                offset
+        }, postRowMapper());
+    }
 }
