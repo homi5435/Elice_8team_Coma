@@ -2,7 +2,7 @@ package com.coma.coma.comments.Dto;
 
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -10,10 +10,12 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class CommentDto {
     private int commentId;
-    private int commentUserId;
-    private int commentPostId;
+    //TODO UserId 받아와서 설정
+    private int UserId = 1;
+    private int PostId;
     private String content;
-    private String isDelete;
-    private Timestamp modifiedDate;
-    private Timestamp createdDate;
+    private String isDelete = "N";
+    private LocalDateTime modifiedDate;
+    private LocalDateTime createdDate = LocalDateTime.now();
+    public void updateModifiedDate(){ this.modifiedDate = LocalDateTime.now(); }
 }

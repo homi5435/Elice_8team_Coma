@@ -3,6 +3,7 @@ package com.coma.coma.comments.Controller;
 import com.coma.coma.comments.Dto.CommentDto;
 import com.coma.coma.comments.Entity.Comment;
 import com.coma.coma.comments.Service.CommentService;
+import com.coma.coma.post.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,32 +25,33 @@ public class CommentController {
         List<Comment> comments = commentService.getCommentsByPostId(postId);
         model.addAttribute("comments", comments);
         model.addAttribute("postId", postId);
-        return "comments";
+        return "post/post";
     }
 
     @PostMapping
-    public String addComment(@ModelAttribute CommentDto commentDto) {
-        commentService.addComment(commentDto);
-        return "redirect:/comments/" + commentDto.getCommentPostId(); // 댓글 추가 후 해당 게시글의 댓글 목록으로 리다이렉트
+    public String addComment(@ModelAttribute CommentDto comment) {
+        commentService.addComment(comment);
+        return "redirect:/posts/" + comment.getPostId();
     }
 
-    @GetMapping("/edit/{commentId}")
+    @GetMapping("/{commentId}/edit")
     public String editCommentForm(@PathVariable int commentId, Model model) {
         CommentDto comment = commentService.getCommentById(commentId);
         model.addAttribute("comment", comment);
-        return "editComment";
+        return "post/post";
     }
 
-    @PostMapping("/edit")
-    public String editComment(@ModelAttribute CommentDto commentDto) {
-        commentService.updateComment(commentDto);
-        return "redirect:/comments/" + commentDto.getCommentPostId(); // 수정 후 해당 게시글의 댓글 목록으로 리다이렉트
+    @PostMapping("/{commentId}/update")
+    public String editComment(@ModelAttribute CommentDto comment) {
+        commentService.updateComment(comment);
+        int postId = commentService.getPostIdByCommentId(comment.getCommentId());
+        return "redirect:/posts/" + postId;
     }
 
-    @PostMapping("/delete/{commentId}")
+    @PostMapping("/{commentId}/delete")
     public String deleteComment(@PathVariable int commentId) {
         int postId = commentService.getPostIdByCommentId(commentId);
         commentService.deleteComment(commentId);
-        return "redirect:/comments/" + postId; // 삭제 후 해당 게시글의 댓글 목록으로 리다이렉트
+        return "redirect:/posts/" + postId;
     }
 }

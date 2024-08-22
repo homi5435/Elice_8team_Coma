@@ -19,32 +19,34 @@ public class CommentRepository {
     }
 
     public void addComment(CommentDto comment) {
-        String sql = "INSERT INTO Comment (comment_user_id, comment_post_id, content, is_delete, created_date) VALUES (?, ?, ?, ?, ?)";
+        if(comment.getIsDelete() == null) comment.setIsDelete("N");
+        String sql = "INSERT INTO Comment (user_id, post_id, content, is_delete, created_date) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, comment.getCommentUserId());
-            ps.setInt(2, comment.getCommentPostId());
+            ps.setInt(1, 1);
+            ps.setInt(2, comment.getPostId());
             ps.setString(3, comment.getContent());
             ps.setString(4, comment.getIsDelete());
-            ps.setTimestamp(5, comment.getCreatedDate());
+            ps.setTimestamp(5, java.sql.Timestamp.valueOf(comment.getCreatedDate()));
             return ps;
         });
     }
 
     public List<Comment> getCommentsByPostId(int postId) {
-        String sql = "SELECT * FROM Comment WHERE comment_post_id = ? AND is_delete = 'N'";
+        String sql = "SELECT * FROM Comment WHERE post_id = ? AND is_delete = 'N'";
         RowMapper<Comment> rowMapper = (rs, rowNum) -> {
             Comment comment = new Comment();
             comment.setCommentId(rs.getInt("comment_id"));
-            comment.setCommentUserId(rs.getInt("comment_user_id"));
-            comment.setCommentPostId(rs.getInt("comment_post_id"));
+            comment.setUserId(rs.getInt("user_id"));
+            comment.setPostId(rs.getInt("post_id"));
             comment.setContent(rs.getString("content"));
             comment.setIsDelete(rs.getString("is_delete"));
-            comment.setModifiedDate(rs.getTimestamp("modified_date"));
-            comment.setCreatedDate(rs.getTimestamp("created_date"));
+            comment.setCreatedDate(rs.getTimestamp("created_date").toLocalDateTime());
+            comment.setModifiedDate(rs.getTimestamp("modified_date") != null
+                    ? rs.getTimestamp("modified_date").toLocalDateTime() : null);
             return comment;
         };
-        return jdbcTemplate.query(sql, rowMapper, new Object[]{postId});
+        return jdbcTemplate.query(sql, rowMapper, postId);
     }
 
     public CommentDto getCommentById(int commentId) {
@@ -52,18 +54,19 @@ public class CommentRepository {
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             CommentDto comment = new CommentDto();
             comment.setCommentId(rs.getInt("comment_id"));
-            comment.setCommentUserId(rs.getInt("comment_user_id"));
-            comment.setCommentPostId(rs.getInt("post_id"));
+            comment.setUserId(rs.getInt("user_id"));
+            comment.setPostId(rs.getInt("post_id"));
             comment.setContent(rs.getString("content"));
             comment.setIsDelete(rs.getString("is_delete"));
-            comment.setModifiedDate(rs.getTimestamp("modified_date"));
-            comment.setCreatedDate(rs.getTimestamp("created_date"));
+            comment.setModifiedDate(rs.getTimestamp("modified_date").toLocalDateTime());
+            comment.setCreatedDate(rs.getTimestamp("created_date").toLocalDateTime());
             return comment;
-        }, new Object[]{commentId});
+        }, commentId);
     }
 
     public void updateComment(CommentDto comment) {
         String sql = "UPDATE Comment SET content = ?, modified_date = ? WHERE comment_id = ?";
+        comment.updateModifiedDate();
         jdbcTemplate.update(sql, comment.getContent(), comment.getModifiedDate(), comment.getCommentId());
     }
 
@@ -73,8 +76,8 @@ public class CommentRepository {
     }
 
     public int getPostIdByCommentId(int commentId) {
-        String sql = "SELECT comment_post_id FROM Comment WHERE comment_id = ?";
-        Integer postId = jdbcTemplate.queryForObject(sql,  Integer.class, new Object[]{commentId});
+        String sql = "SELECT post_id FROM Comment WHERE comment_id = ?";
+        Integer postId = jdbcTemplate.queryForObject(sql, Integer.class, commentId);
         return postId != null ? postId : -1;
     }
 }

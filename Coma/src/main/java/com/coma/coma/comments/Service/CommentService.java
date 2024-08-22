@@ -17,8 +17,8 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public List<Comment> getCommentsByPostId(int commentPostId) {
-        return commentRepository.getCommentsByPostId(commentPostId);
+    public List<Comment> getCommentsByPostId(int postId) {
+        return commentRepository.getCommentsByPostId(postId);
     }
 
     public void addComment(CommentDto commentDto) {
