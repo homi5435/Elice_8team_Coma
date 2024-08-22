@@ -24,9 +24,9 @@ public class UserApiController {
     private final JwtUtil jwtUtil;
 
     // 사용자 정보 조회
-    @GetMapping("/{user_id}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable int user_id) {
-        UserResponseDto user = userService.getUserByUserId(user_id);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable String id) {
+        UserResponseDto user = userService.getUserById(id);
 
         if (user != null) {
             return ResponseEntity.ok(user);  // 200 OK와 함께 사용자 정보를 반환
@@ -71,21 +71,6 @@ public class UserApiController {
         // 로그아웃 로직
         return ResponseEntity.ok().build();
     }
-    /*
-    // 회원정보 삭제
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int user_id) {
-        userService.deleteUser(user_id);  // 회원정보 삭제 로직
-        return ResponseEntity.noContent().build();
-    }
-
-    // 회원정보 수정
-    @PutMapping("/{user_id}")
-    public ResponseEntity<Void> updateUser(@PathVariable int user_id, @RequestBody UserDto userDto) {
-        userService.updateUser(user_id, userDto);  // 회원정보 수정 로직
-        return ResponseEntity.ok().build();
-    }
-     */
 
     // 아이디 중복 체크 API
     @GetMapping("/check-id/{id}")

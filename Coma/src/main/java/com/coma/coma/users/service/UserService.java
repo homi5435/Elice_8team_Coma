@@ -22,6 +22,12 @@ public class UserService {
         return userRepository.getUserByUserId(user_id);
     }
 
+    public UserResponseDto getUserById(String id) {
+        Users user = userRepository.findByUserIdName(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+        return new UserResponseDto(user.getUserId(), user.getId(), user.getName(), user.getPhoneNumber(), user.getPassword(), user.getSignupDate());
+    }
+
     public void registerUser(UserDto userDto) {
         // 아이디 중복 체크
         if (userRepository.existsById(userDto.getId())) {
@@ -42,6 +48,36 @@ public class UserService {
 
         // DB에 사용자 저장
         userRepository.save(user);
+    }
+
+    // 사용자 정보 업데이트
+    public void updateUser(String oldId, String newId, String name, String phoneNumber, String password) {
+        Users user = userRepository.findByUserIdName(oldId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + oldId));
+
+        if (!oldId.equals(newId) && checkDuplicateId(newId)) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        user.setId(newId);
+        user.setName(name);
+        user.setPhoneNumber(phoneNumber);
+
+        if (password != null && !password.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
+
+        userRepository.update(user);
+    }
+
+
+    public void deleteUser(String id) {
+        Optional<Users> user = userRepository.findByUserIdName(id);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+        } else {
+            throw new IllegalArgumentException("User not found with id: " + id);
+        }
     }
 
     public boolean checkDuplicateId(String id) {
