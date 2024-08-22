@@ -2,6 +2,7 @@ package com.coma.coma.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -27,11 +29,25 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
 
         String username = null;
         String jwt = null;
 
+        // 쿠키에서 JWT 토큰 추출
+        if (request.getCookies() != null) {
+            Cookie jwtCookie = Arrays.stream(request.getCookies())
+                    .filter(cookie -> "jwtToken".equals(cookie.getName()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (jwtCookie != null) {
+                jwt = jwtCookie.getValue();
+                username = jwtUtil.extractUsername(jwt);
+            }
+        }
+
+        // Authorization 헤더에서 JWT 토큰 추출(동작확인 필요)
+        final String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             //Bearer 이후의 문자열 (즉, 실제 JWT 토큰)을 추출
             jwt = authorizationHeader.substring(7);

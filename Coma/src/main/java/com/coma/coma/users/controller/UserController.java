@@ -1,14 +1,19 @@
 package com.coma.coma.users.controller;
 
+import com.coma.coma.security.CustomUserDetails;
 import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,6 +41,28 @@ public class UserController {
 
         return "user/userInfo";  // userinfo.html 템플릿을 반환
     }
+
+    @GetMapping("/userInfo")
+    public String redirectToUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            userId = userDetails.getUsername();  // username이 userId로 설정된 경우
+            //System.out.println(userDetails.getUsername());
+            //System.out.println(userDetails.getName());
+            //System.out.println(userDetails.getGroupId());
+        }
+
+        if (userId != null) {
+            return "redirect:/users/" + userId;  // userId로 리디렉션
+        } else {
+            // 만약 userId가 null이면 로그인 페이지로 리디렉션
+            return "redirect:/users/login";
+        }
+    }
+
 
     @GetMapping("/users/edit/{id}")
     public String editUserInfo(@PathVariable("id") String id, Model model) {
