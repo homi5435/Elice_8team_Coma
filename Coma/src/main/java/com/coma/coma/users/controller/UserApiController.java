@@ -3,6 +3,9 @@ package com.coma.coma.users.controller;
 import com.coma.coma.security.JwtUtil;
 import com.coma.coma.users.dto.*;
 import com.coma.coma.users.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +51,7 @@ public class UserApiController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPassword())
@@ -60,17 +63,32 @@ public class UserApiController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getId());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
+        Cookie cookie = new Cookie("jwtToken", jwt);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60); // 1일
+
+        response.addCookie(cookie);
+
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
 
 
     // 로그아웃
+
+
     @PostMapping("/logout")
-    public ResponseEntity<Void> logoutUser() {
-        // 로그아웃 로직
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 즉시 만료
+        response.addCookie(cookie);
+
         return ResponseEntity.ok().build();
     }
+
 
     // 아이디 중복 체크 API
     @GetMapping("/check-id/{id}")
