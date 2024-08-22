@@ -26,6 +26,9 @@
   <title th:text="${board.board_title}"></title>
 </head>
 <body>
+<!-- 공통 헤더 포함 -->
+<div th:replace="~{fragments/header :: header}"></div>
+
 <div class="container my-5">
   <a
       class="link link-offset-1 link-offset-2-hover text-sm fs-6 mb-2 d-block"
