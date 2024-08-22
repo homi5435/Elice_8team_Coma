@@ -26,7 +26,8 @@
   <div class="header mb-5">
     <h1 class="text-center">게시글 추가</h1>
   </div>
-  <form th:action="@{/posts/create/{boardId}(boardId=${boardId})}" method="post">
+  <form id="postForm">
+    <input type="hidden" id="boardId" th:value="${boardId}" />
     <div class="mb-3">
       <label for="title">게시글 제목</label>
       <input
@@ -65,5 +66,35 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"
 ></script>
+<script>
+    document.getElementById('postForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const boardId = document.getElementById('boardId').value;
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+
+        fetch(`/api/posts/${boardId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title, content })
+        })
+            .then(response => {
+                if (response.ok) {
+                    // 성공적으로 게시글이 생성되면 게시물 목록 페이지로 리다이렉트
+                    window.location.href = `/page/posts/list/${boardId}`;
+                } else {
+                    // 오류 처리
+                    console.error('게시글 작성에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                // 네트워크 오류 처리
+                console.error('Error:', error);
+            });
+    });
+</script>
 </body>
 </html>

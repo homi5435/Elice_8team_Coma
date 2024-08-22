@@ -26,6 +26,9 @@
   <title th:text="${board.board_title}"></title>
 </head>
 <body>
+<!-- 공통 헤더 포함 -->
+<div th:replace="~{fragments/header :: header}"></div>
+
 <div class="container my-5">
   <a
       class="link link-offset-1 link-offset-2-hover text-sm fs-6 mb-2 d-block"
@@ -55,7 +58,7 @@
       </div>
     </form>
     <a
-        th:href="@{/posts/new/{boardId}(boardId=${board.board_id})}"
+        th:href="@{/page/posts/new/{boardId}(boardId=${board.board_id})}"
         class="btn btn-primary"
     >게시글 추가</a
     >
@@ -65,7 +68,7 @@
         class="board-item list-group-item p-3 list-group-item-action"
         th:unless="${posts.isEmpty()}"
         th:each="post : ${posts}"
-        th:href="@{/posts/{postId}(postId=${post.postId})}"
+        th:href="@{/page/posts/{postId}(postId=${post.postId})}"
     >
       <h4 class="fw-bold mb-1" th:text="${post.title}">게시글 제목</h4>
       <small class="text-secondary" th:text="${post.createdDate}"
@@ -73,9 +76,9 @@
     </a>
     <span
         th:if="${posts.isEmpty()}"
-        class="text-center"
+        class="text-center">
 <!--        th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}"-->
-    ></span>
+    </span>
   </div>
 <!--  페이지네이션 생략 -->
 <!--  <div class="w-100 d-flex justify-content-center">-->
