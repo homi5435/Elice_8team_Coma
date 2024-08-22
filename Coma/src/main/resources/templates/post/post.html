@@ -326,8 +326,8 @@
     }
 
     function handleDeleteCommentModalButton() {
-        fetch(`/comments/${currentComment}`, {
-            method: "DELETE",
+        fetch(`/comments/${currentComment}/delete`, {
+            method: "POST",
         }).then(() => elementToDelete.remove());
 
         const commentsCount = document.getElementById("commentsCount");
@@ -341,7 +341,7 @@
         document.getElementById("commentContentTextarea").innerText = content;
         document
             .getElementById("commentEditForm")
-            .setAttribute("action", `/comments/${commentId}/edit`);
+            .setAttribute("action", `/comments/${commentId}/update`);
     }
 </script>
 </body>
