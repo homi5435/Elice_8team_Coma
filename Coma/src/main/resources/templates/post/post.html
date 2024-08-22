@@ -73,7 +73,7 @@
       >
         <div class="card-body position-relative">
           <p class="mb-2" th:text="${comment.content}">댓글 내용</p>
-          <small class="text-secondary">2024-01-04T13:21:21</small>
+          <small class="text-secondary" th:text="${comment.createdDate}">생성 일자</small>
 
           <div
               class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
