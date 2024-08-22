@@ -12,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BoardCreateRequest {
 
-    @NotBlank
+    @NotBlank(message = "제목은 공백일 수 없습니다.")
     private String board_title;
 
-    @NotBlank
+    @NotBlank(message = "설명은 공백일 수 없습니다.")
     private String board_description;
 
     public Board toEntity() {
