@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @Setter
 public class Post {
 
-    private int postId;
-    private int userId;
-    private int groupId;
+    private Integer postId;
+    private Integer userId;
+    private Integer groupId;
     private Long boardId;
     private String title;
     private String content;
