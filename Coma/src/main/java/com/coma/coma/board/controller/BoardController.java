@@ -1,9 +1,12 @@
 package com.coma.coma.board.controller;
 
+import com.coma.coma.board.dto.BoardCreateRequest;
+import com.coma.coma.board.dto.BoardUpdateRequest;
 import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,16 +47,16 @@ public class BoardController {
 
     // 추가 api
     @PostMapping()
-    public String createBoard(@ModelAttribute("form") Board board, Model model) {
+    public String createBoard(@ModelAttribute("form") @Validated BoardCreateRequest boardCreateRequest) {
+        Board board = boardCreateRequest.toEntity();
         boardService.createBoard(board);
         return "redirect:/api/boards";
     }
 
     // 수정 api
     @PostMapping("/{boardId}/edit")
-    public String updateContact(@PathVariable("boardId") long boardId, @ModelAttribute("form") Board board) {
-        board.setBoard_id(boardId);
-        boardService.updateBoard(board);
+    public String updateContact(@PathVariable("boardId") Long boardId, @ModelAttribute("form") @Validated BoardUpdateRequest boardUpdateRequest) {
+        boardService.updateBoard(boardId, boardUpdateRequest);
         return "redirect:/api/boards";
     }
 

@@ -1,5 +1,6 @@
 package com.coma.coma.board.service;
 
+import com.coma.coma.board.dto.BoardUpdateRequest;
 import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.repository.BoardJdbcTemplateRepository;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,11 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public void updateBoard(Board board) {
-        Board targetBoard = findOne(board.getBoard_id());
+    public void updateBoard(Long boardId, BoardUpdateRequest boardUpdateRequest) {
+        Board targetBoard = findOne(boardId);
 
-        targetBoard.setBoard_title(board.getBoard_title());
-        targetBoard.setBoard_description(board.getBoard_description());
-
+        targetBoard.setBoard_title(boardUpdateRequest.getBoard_title());
+        targetBoard.setBoard_description(boardUpdateRequest.getBoard_description());
 
         boardRepository.save(targetBoard);
     }

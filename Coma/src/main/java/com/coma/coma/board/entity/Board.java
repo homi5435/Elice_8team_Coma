@@ -32,4 +32,12 @@ public class Board {
 
     @Column
     private LocalDateTime modified_date;
+
+
+    // 추가 생성자
+    public Board(String board_title, String board_description) {
+        this.board_title = board_title;
+        this.board_description = board_description;
+    }
+
 }
