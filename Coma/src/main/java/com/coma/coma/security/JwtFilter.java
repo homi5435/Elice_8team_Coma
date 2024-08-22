@@ -47,12 +47,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // Authorization 헤더에서 JWT 토큰 추출(동작확인 필요)
-        final String authorizationHeader = request.getHeader("Authorization");
+        /*final String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             //Bearer 이후의 문자열 (즉, 실제 JWT 토큰)을 추출
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
-        }
+        }*/
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
