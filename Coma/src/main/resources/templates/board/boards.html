@@ -183,7 +183,7 @@
         axios.delete('/api/v2/boards/' + boardId)
             .then(function(response) {
                 console.log(response);
-                alert("수정 되었습니다!");
+                alert("삭제 되었습니다!");
                 window.location.href = "/api/boards"
             })
             .catch(function(error) {
