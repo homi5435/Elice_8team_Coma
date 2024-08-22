@@ -36,9 +36,8 @@ public class PostRestController {
     }
 
     // 게시물 수정
-    @PutMapping("/{boardId}/{postId}")
+    @PutMapping("/{postId}")
     public ResponseEntity<PostResponseDto> updatePost(
-            @PathVariable("boardId") Long boardId,
             @PathVariable("postId") Integer postId,
             @RequestBody PostRequestDto postRequestDto) {
 

@@ -79,14 +79,13 @@
         event.preventDefault();
 
 
-        const boardId = document.getElementById('boardId').value;
         const postId = document.getElementById('postId').value;
 
         // Get form data
         const form = document.getElementById('updateForm');
         const formData = new FormData(form);
 
-        fetch(`/api/posts/${boardId}/${postId}`, {
+        fetch(`/api/posts/${postId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
