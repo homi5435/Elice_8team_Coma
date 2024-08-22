@@ -5,7 +5,6 @@ import com.coma.coma.board.service.BoardService;
 import com.coma.coma.comments.Entity.Comment;
 import com.coma.coma.comments.Service.CommentService;
 import com.coma.coma.post.dto.PostResponseDto;
-import com.coma.coma.post.entity.Post;
 import com.coma.coma.post.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +58,6 @@ public class PostController {
     @GetMapping("/edit/{postId}")
     public String editPostPage(@PathVariable("postId") Integer postId, Model model) {
         PostResponseDto post = postService.findPost(postId);
-        Long boardId = post.getBoardId();
         model.addAttribute("post", post);
         return "post/editPost";
     }
