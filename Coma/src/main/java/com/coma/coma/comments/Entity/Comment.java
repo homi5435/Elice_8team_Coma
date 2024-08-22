@@ -1,39 +1,23 @@
 package com.coma.coma.comments.Entity;
 
-import jakarta.persistence.*;
+
 import lombok.*;
 
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "Comment")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
+    private int commentId;       // 댓글 ID (자동 증가)
+    private int UserId;   // 사용자 ID
+    private int PostId;   // 포스트 ID
+    private String content;       // 댓글 내용
+    private String isDelete;      // 삭제 여부
+    private LocalDateTime modifiedDate; // 수정 날짜
+    private LocalDateTime createdDate = LocalDateTime.now();   // 생성 날짜
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
-    private int commentId;
-
-    @Column(name = "comment_user_id", nullable = false)
-    private int commentUserId;
-
-    @Column(name = "comment_post_id", nullable = false)
-    private int commentPostId;
-
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "is_delete")
-    private String isDelete;
-
-    @Column(name = "modified_date")
-    private Timestamp modifiedDate;
-
-    @Column(name = "created_date")
-    private Timestamp createdDate;
+    public void updateModifiedDate(){ this.modifiedDate = LocalDateTime.now(); }
 }
