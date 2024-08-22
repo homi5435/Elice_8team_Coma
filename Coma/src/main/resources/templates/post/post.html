@@ -42,7 +42,7 @@
   <a
       class="link link-offset-1 link-offset-2-hover text-sm fs-6 mb-2 d-block"
       style="transition: all 0.1s ease-in-out"
-      th:href="@{/posts/list/{boardId}(boardId=${post.boardId})}"
+      th:href="@{/page/posts/list/{boardId}(boardId=${post.boardId})}"
   >&larr; 게시판으로 돌아가기</a
   >
   <div class="container border rounded p-4 position-relative">
@@ -133,7 +133,7 @@
         <li>
           <button
               class="dropdown-item d-flex align-items-center gap-2"
-              th:onclick="'location.href=\'/posts/' + ${post.postId} + '/edit\''"
+              th:onclick="'location.href=\'/page/posts/edit/' + ${post.postId} + '\''"
           >
             <span class="material-symbols-outlined"> edit </span>수정
           </button>
@@ -301,13 +301,13 @@
     }
 
     function handleDeletePostModalButton() {
-        fetch(`/posts/delete/${currentPost}`, {
-            method: "GET",
+        fetch(`/api/posts/${currentPost}`, {
+            method: "DELETE",
         })
             .then(response => {
-                if (response.ok) {
+                if (response.status === 204) {  // 204 No Content 확인
                     // 삭제 요청이 성공했을 때 페이지를 새로고침
-                    window.location.href = `/posts/list/${currentBoard}`;
+                    window.location.href = `/page/posts/list/${currentBoard}`;
                 } else {
                     // 오류 처리를 할 수 있습니다 (선택 사항)
                     console.error('삭제 요청이 실패했습니다.');
