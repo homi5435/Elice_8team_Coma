@@ -202,7 +202,7 @@
         })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = window.location.href;
+                    window.location.replace(window.location.origin + window.location.pathname);
                 } else {
                     alert('로그아웃에 실패했습니다.');
                 }

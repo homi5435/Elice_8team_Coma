@@ -4,14 +4,18 @@
   <meta charset="UTF-8">
   <title>Header</title>
   <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
 <body>
 <div th:fragment="header">
   <div class="header">
     <div class="header-right">
-      <a th:href="@{/userInfo}">내정보</a>
-      <a th:href="@{/users/register}">회원가입</a>
-      <a th:href="@{/users/login}">로그인</a>
-      <a href="#" onclick="performLogout()">로그아웃</a>
+      <!-- 로그인된 사용자일 경우에만 표시 -->
+      <a th:if="${#authentication.name != 'anonymousUser'}" th:href="@{/userInfo}">내정보</a>
+      <a th:if="${#authentication.name != 'anonymousUser'}" href="#" onclick="performLogout()">로그아웃</a>
+
+      <!-- 로그인되지 않은 사용자일 경우에만 표시 -->
+      <a th:if="${#authentication.name == 'anonymousUser'}" th:href="@{/users/register}">회원가입</a>
+      <a th:if="${#authentication.name == 'anonymousUser'}" th:href="@{/users/login}">로그인</a>
     </div>
   </div>
 </div>

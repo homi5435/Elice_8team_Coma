@@ -19,12 +19,3 @@ VALUES('게시판 이름', '게시판 설명', CURRENT_TIMESTAMP);
 
 INSERT INTO post (user_id, group_id, board_id, title, content, is_delete, created_date, modified_date)
 VALUES (1, 1, 1, 'First Post Title', 'This is the content of the first post.', 'N', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO Comment (comment_user_id, comment_post_id, content, is_delete, modified_date, created_date)
-VALUES (1, 1, 'This is the first comment.', 'N', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO Comment (comment_user_id, comment_post_id, content, is_delete, modified_date, created_date)
-VALUES (1, 1, 'This is the second comment.', 'N', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO Comment (comment_user_id, comment_post_id, content, is_delete, modified_date, created_date)
-VALUES (1, 1, 'This is the third comment.', 'N', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
