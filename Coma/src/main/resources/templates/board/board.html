@@ -66,8 +66,8 @@
   <div class="list-group position-relative mb-3">
     <a
         class="board-item list-group-item p-3 list-group-item-action"
-        th:unless="${posts.isEmpty()}"
-        th:each="post : ${posts}"
+        th:unless="${posts.contents.isEmpty()}"
+        th:each="post : ${posts.contents}"
         th:href="@{/page/posts/{postId}(postId=${post.postId})}"
     >
       <h4 class="fw-bold mb-1" th:text="${post.title}">게시글 제목</h4>
@@ -75,28 +75,25 @@
       >게시글 생성일</small>
     </a>
     <span
-        th:if="${posts.isEmpty()}"
+        th:if="${posts.contents.isEmpty()}"
         class="text-center"
         th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}">
     </span>
   </div>
-<!--  페이지네이션 생략 -->
-<!--  <div class="w-100 d-flex justify-content-center">-->
-<!--    <ul class="pagination">-->
-<!--      <li-->
-<!--          th:each="i : ${posts.totalPages > 1 ? #numbers.sequence(0, postPage.totalPages - 1) : #numbers.sequence(0, 0)}"-->
-<!--          class="page-item"-->
-<!--          th:classappend="${i == postPage.number ? 'active' : ''}"-->
-<!--      >-->
-<!--        <a-->
-<!--            class="page-link"-->
-<!--            th:href="@{/boards/{boardId}(page=${i}, size=${postPage.size}, boardId=${board.id}, keyword=${keyword})}"-->
-<!--            th:text="${i + 1}"-->
-<!--        >0</a-->
-<!--        >-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--  </div>-->
+  <div class="w-100 d-flex justify-content-center">
+    <ul class="pagination">
+      <li th:each="i : ${#numbers.sequence(0, posts.totalPages - 1)}"
+          class="page-item"
+          th:classappend="${i + 1 == posts.number ? 'active' : ''}">
+        <a
+            class="page-link"
+            th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${i + 1}, size=${size}, keyword=${keyword})}"
+            th:text="${i + 1}"
+        >1</a
+        >
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- 부트스트랩 JS 추가 -->
