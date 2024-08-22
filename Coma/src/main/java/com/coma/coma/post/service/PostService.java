@@ -63,4 +63,12 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException());
         postRepository.delete(post);
     }
+
+    public List<PostResponseDto> findByKeyword(Long boardId, String keyword) {
+        List<Post> posts = postRepository.findByKeyword(boardId, keyword);
+        List<PostResponseDto> postResponseDtos = posts.stream()
+                .map(post -> postMapper.toResponseDto(post))
+                .collect(Collectors.toList());
+        return postResponseDtos;
+    }
 }

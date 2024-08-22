@@ -49,8 +49,8 @@
         <input
             class="form-control"
             name="keyword"
-            placeholder="키워드 검색"/>
-<!--            th:value="${keyword}"-->
+            placeholder="키워드 검색"
+            th:value="${keyword}"/>
 
         <button class="btn btn-primary lh-1 p-0 px-2">
           <span class="material-symbols-outlined"> search </span>
@@ -76,8 +76,8 @@
     </a>
     <span
         th:if="${posts.isEmpty()}"
-        class="text-center">
-<!--        th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}"-->
+        class="text-center"
+        th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}">
     </span>
   </div>
 <!--  페이지네이션 생략 -->

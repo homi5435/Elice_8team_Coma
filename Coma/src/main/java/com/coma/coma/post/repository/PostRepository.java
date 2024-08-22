@@ -104,7 +104,7 @@ public class PostRepository {
 
     // READ - all
     public List<Post> findAll(Long boardId) {
-        String sql = "SELECT * FROM post WHERE board_id = ? AND is_delete = 'N'";
+        String sql = "SELECT * FROM post WHERE board_id = ? AND is_delete = 'N' ORDER BY created_date DESC";
         return jdbcTemplate.query(sql, new Object[]{boardId}, postRowMapper());
     }
 
@@ -130,5 +130,19 @@ public class PostRepository {
         jdbcTemplate.update(deleteSql,
                 java.sql.Timestamp.valueOf(post.getModifiedDate()),
                 post.getPostId());
+    }
+
+    public List<Post> findByKeyword(Long boardId, String keyword) {
+        String querySql = "SELECT * FROM post " +
+                "WHERE board_id = ? " +
+                "AND is_delete = 'N' " +
+                "AND (Lower(title) LIKE Lower(?) OR Lower(content) LIKE Lower(?))" +
+                "ORDER BY created_date DESC";
+
+        return jdbcTemplate.query(
+                querySql,
+                new Object[]{boardId, "%" + keyword + "%", "%" + keyword + "%"},
+                postRowMapper()
+        );
     }
 }
