@@ -7,7 +7,6 @@ import com.coma.coma.post.mapper.PostMapper;
 import com.coma.coma.post.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class PostService {
     // create
     public PostResponseDto createPost(Post post) {
         Post saved = postRepository.save(post);
-        PostResponseDto postResponseDto = postMapper.toResponseDto(post);
+        PostResponseDto postResponseDto = postMapper.toResponseDto(saved);
         return postResponseDto;
     }
 
