@@ -31,7 +31,7 @@ public class CommentController {
     @PostMapping
     public String addComment(@ModelAttribute CommentDto comment) {
         commentService.addComment(comment);
-        return "redirect:/posts/" + comment.getPostId();
+        return "redirect:/page/posts/" + comment.getPostId();
     }
 
     @GetMapping("/{commentId}/edit")
@@ -45,13 +45,13 @@ public class CommentController {
     public String editComment(@ModelAttribute CommentDto comment) {
         commentService.updateComment(comment);
         int postId = commentService.getPostIdByCommentId(comment.getCommentId());
-        return "redirect:/posts/" + postId;
+        return "redirect:/page/posts/" + postId;
     }
 
     @PostMapping("/{commentId}/delete")
     public String deleteComment(@PathVariable int commentId) {
         int postId = commentService.getPostIdByCommentId(commentId);
         commentService.deleteComment(commentId);
-        return "redirect:/posts/" + postId;
+        return "redirect:/page/posts/" + postId;
     }
 }
