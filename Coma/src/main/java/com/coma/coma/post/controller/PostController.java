@@ -29,9 +29,17 @@ public class PostController {
 
     // 게시물 목록 페이지
     @GetMapping("/list/{boardId}")
-    public String getPosts(@PathVariable("boardId") Long boardId, Model model) {
+    public String getPosts(@PathVariable("boardId") Long boardId,
+                           @RequestParam(value = "keyword", required = false) String keyword,
+                           Model model) {
+        List<PostResponseDto> posts;
+        if (keyword != null) {
+            posts = postService.findByKeyword(boardId, keyword);
+        } else {
+            posts = postService.findAll(boardId);
+        }
         Board board = boardService.findOne(boardId);
-        model.addAttribute("posts", postService.findAll(boardId));
+        model.addAttribute("posts", posts);
         model.addAttribute("board", board);
         return "board/board";
     }
