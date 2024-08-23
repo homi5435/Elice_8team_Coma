@@ -9,10 +9,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
-    private int commentId;
+    private Integer commentId;
     //TODO UserId 받아와서 설정
-    private int UserId = 1;
-    private int PostId;
+    private Integer userId;
+    private Integer groupId;
+    private Integer postId;
     private String content;
     private String isDelete = "N";
     private LocalDateTime modifiedDate;
