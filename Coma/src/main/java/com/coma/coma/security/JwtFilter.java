@@ -54,6 +54,8 @@ public class JwtFilter extends OncePerRequestFilter {
             username = jwtUtil.extractUsername(jwt);
         }*/
 
+        // jwt 검증 후 인증객체 생성 및 설정 (JWT 토큰을 통해 스프링 시큐리티가 인증을 처리할 수 있도록 연결)
+        // jwt 토큰을 통해 인증된 사용자는 추가적인 로그인 절차 없이도 스프링 시큐리티에서 인증된 사용자로 취급
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
