@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
-    private int commentId;       // 댓글 ID (자동 증가)
-    private int UserId;   // 사용자 ID
-    private int PostId;   // 포스트 ID
+    private Integer commentId;       // 댓글 ID (자동 증가)
+    private Integer userId;   // 사용자 ID
+    private Integer groupId; // group ID
+    private Integer postId;   // 포스트 ID
     private String content;       // 댓글 내용
     private String isDelete;      // 삭제 여부
     private LocalDateTime modifiedDate; // 수정 날짜
