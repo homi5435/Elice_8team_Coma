@@ -42,20 +42,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtCookie != null) {
                 jwt = jwtCookie.getValue();
-                username = jwtUtil.extractUsername(jwt);
+                try {
+                    username = jwtUtil.extractUsername(jwt);
+                } catch (Exception e) {
+                    // JWT 토큰이 유효하지 않거나 만료된 경우 예외 처리
+                    handleInvalidJwt(response);
+                    return;
+                }
             }
         }
 
-        // Authorization 헤더에서 JWT 토큰 추출(동작확인 필요)
+        // Authorization 헤더에서 JWT 토큰 추출 (필요시 사용)
         /*final String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            //Bearer 이후의 문자열 (즉, 실제 JWT 토큰)을 추출
             jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+            } catch (Exception e) {
+                handleInvalidJwt(response);
+                return;
+            }
         }*/
 
         // jwt 검증 후 인증객체 생성 및 설정 (JWT 토큰을 통해 스프링 시큐리티가 인증을 처리할 수 있도록 연결)
-        // jwt 토큰을 통해 인증된 사용자는 추가적인 로그인 절차 없이도 스프링 시큐리티에서 인증된 사용자로 취급
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
@@ -65,8 +74,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            } else {
+                // JWT가 유효하지 않은 경우
+                handleInvalidJwt(response);
+                return;
             }
         }
+
         chain.doFilter(request, response);
     }
 
@@ -74,5 +88,16 @@ public class JwtFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         // 로그인 요청은 필터링하지 않음
         return request.getServletPath().equals("/api/users/login");
+    }
+
+    private void handleInvalidJwt(HttpServletResponse response) throws IOException {
+        // 쿠키 삭제
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 쿠키 즉시 만료
+        response.addCookie(cookie);
+
+        // 로그인 페이지로 리다이렉트
+        response.sendRedirect("/users/login");
     }
 }
