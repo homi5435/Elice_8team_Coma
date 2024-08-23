@@ -5,8 +5,10 @@ import com.coma.coma.board.dto.BoardCreateRequest;
 import com.coma.coma.board.dto.BoardUpdateRequest;
 import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
+import com.coma.coma.security.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ public class BoardApiController {
 
     // 추가 api
     @PostMapping()
-    public ResponseEntity<Void> createBoard(@RequestBody @Validated BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<Void> createBoard(@RequestBody @Validated BoardCreateRequest boardCreateRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Board board = boardCreateRequest.toEntity();
         boardService.createBoard(board);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -2,6 +2,8 @@ package com.coma.coma.board.controller.v2;
 
 import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
+import com.coma.coma.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,8 @@ public class BoardControllerV2 {
 
     // 추가 화면으로 이동
     @GetMapping("/create")
-    public String createForm() {
+    public String createForm(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+        model.addAttribute("user", customUserDetails);
         return "board/v2/createBoard";
     }
 

@@ -4,6 +4,8 @@ import com.coma.coma.board.dto.BoardCreateRequest;
 import com.coma.coma.board.dto.BoardUpdateRequest;
 import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
+import com.coma.coma.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -24,9 +26,10 @@ public class BoardController {
 
     // 게시판 리스트 화면 이동
     @GetMapping
-    public String getBoards(Model model) {
+    public String getBoards(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails ) {
         List<Board> boards = boardService.findBoards();
         model.addAttribute("boards", boards);
+        model.addAttribute("user", customUserDetails);
         return "board/boards";
     }
 

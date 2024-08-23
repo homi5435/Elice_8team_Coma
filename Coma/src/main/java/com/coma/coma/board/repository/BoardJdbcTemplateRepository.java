@@ -28,6 +28,7 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
         return (rs, rowNum) -> {
             Board board = new Board();
             board.setBoard_id(rs.getLong("board_id"));
+            board.setUser_id(rs.getLong("user_id"));
             board.setBoard_title(rs.getString("board_title"));
             board.setBoard_description(rs.getString("board_description"));
             board.setIs_delete(rs.getString("is_delete"));
@@ -69,12 +70,13 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
             jdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(
-                                "INSERT INTO board (board_title, board_description, created_date) VALUES (?, ?, ?)",
+                                "INSERT INTO board (board_title, board_description, created_date, user_id) VALUES (?, ?, ?, ?)",
                                 Statement.RETURN_GENERATED_KEYS
                         );
                         ps.setString(1, board.getBoard_title());
                         ps.setString(2, board.getBoard_description());
                         ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                        ps.setLong(4, board.getUser_id());
                         return ps;
                     },
                     keyHolder
