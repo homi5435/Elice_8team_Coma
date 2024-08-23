@@ -5,6 +5,7 @@ import com.coma.coma.security.CustomUserDetails;
 import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,9 +39,17 @@ public class UserController {
 
     @GetMapping("users/{id}")
     public String getUserInfo(@PathVariable("id") String id, Model model) {
+        // 현재 인증된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUsername = authentication.getName();
+
+        // 요청된 유저아이디(userName)와 현재 로그인한 유저아이디(userName)이 다를 경우 접근 차단
+        if (!id.equals(loggedInUsername)) {
+            return "error/access-denied";// 접근이 거부된 경우 리다이렉트할 페이지
+        }
+
         // 사용자 정보를 서비스에서 조회
         UserResponseDto user = userService.getUserById(id);
-
         // 가져온 데이터를 모델에 추가하여 뷰에 전달
         model.addAttribute("user", user);
 
