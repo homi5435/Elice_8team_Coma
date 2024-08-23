@@ -17,5 +17,5 @@ INSERT INTO board
 (board_title, board_description, created_date)
 VALUES('게시판 이름', '게시판 설명', CURRENT_TIMESTAMP);
 
-INSERT INTO post (user_id, group_id, board_id, title, content, is_delete, created_date, modified_date)
-VALUES (1, 1, 1, 'First Post Title', 'This is the content of the first post.', 'N', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO post (user_id, group_id, board_id, title, content, is_delete, created_date)
+VALUES (1, 1, 1, 'First Post Title', 'This is the content of the first post.', 'N', CURRENT_TIMESTAMP);

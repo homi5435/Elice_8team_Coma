@@ -57,7 +57,7 @@
         </button>
       </div>
     </form>
-    <a
+    <a th:if="${isAuthenticated}"
         th:href="@{/page/posts/new/{boardId}(boardId=${board.board_id})}"
         class="btn btn-primary"
     >게시글 추가</a
