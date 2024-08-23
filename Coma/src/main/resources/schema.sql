@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS board;
 
 CREATE TABLE board (
                        board_id BIGINT NOT NULL AUTO_INCREMENT,
+                       user_id BIGINT NOT NULL,
                        board_title VARCHAR(255) NOT NULL,
                        board_description VARCHAR(255) NOT NULL,
                        is_delete CHAR(1) NOT NULL DEFAULT 'N',

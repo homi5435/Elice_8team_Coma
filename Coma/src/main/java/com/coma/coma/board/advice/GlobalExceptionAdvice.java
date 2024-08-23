@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-//@ControllerAdvice
 public class GlobalExceptionAdvice {
 
     // 400 예외처리

@@ -59,7 +59,7 @@
     </div>
     <div class="d-flex justify-content-end mb-3">
         <!--        <a th:href="@{/api/boards/create}" class="btn btn-primary">게시판 추가</a>-->
-        <a th:href="@{/v2/boards/create}" class="btn btn-primary">게시판 추가</a>
+        <a th:if="${user}" th:href="@{/v2/boards/create}" class="btn btn-primary">게시판 추가</a>
     </div>
     <div class="container p-0">
         <div class="row row-cols-3 position-relative">
@@ -95,10 +95,13 @@
                             >게시판 설명</span
                             >
                         </div>
+
                         <div
                                 class="position-absolute end-0 bottom-0 mb-3 me-3 btn-group bg-white bg-opacity-75"
                                 role="group"
                                 aria-label="edit-delete"
+
+                                th:if="${user != null &&board.user_id == user.userId}"
                         >
                             <!--                            <button class="btn btn-outline-primary lh-1" th:onclick="'event.preventDefault(); location.href=\'/api/boards/' + ${board.board_id} + '/edit\''">-->
                             <!--                                <span class="material-symbols-outlined"> edit </span>-->
@@ -115,6 +118,7 @@
                                 <span class="material-symbols-outlined"> delete </span>
                             </button>
                         </div>
+
                     </a>
                 </div>
             </div>
@@ -210,6 +214,8 @@
         })
             .then(response => {
                 if (response.ok) {
+                console.log("window.location.origin : ", window.location.origin);
+                console.log("window.location.pathname : ", window.location.pathname);
                     window.location.replace(window.location.origin + window.location.pathname);
                 } else {
                     alert('로그아웃에 실패했습니다.');
