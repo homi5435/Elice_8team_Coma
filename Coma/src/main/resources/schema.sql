@@ -54,12 +54,14 @@ CREATE TABLE post (
 CREATE TABLE comment (
                     comment_id INT AUTO_INCREMENT PRIMARY KEY,
                     user_id INT NOT NULL,
+                    group_id INT NOT NULL,
                     post_id INT NOT NULL,
                     content TEXT NOT NULL,
                     is_delete CHAR(1) DEFAULT 'N' NOT NULL,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                     modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     CONSTRAINT FK_Com_User FOREIGN KEY (user_id) REFERENCES users(user_id),
+                    CONSTRAINT FK_Com_Group FOREIGN KEY (group_id) REFERENCES groups(group_id),
                     CONSTRAINT FK_Com_Post FOREIGN KEY (post_id) REFERENCES post(post_id)
 );
 
