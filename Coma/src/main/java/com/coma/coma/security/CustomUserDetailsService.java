@@ -38,6 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getPassword(),
                 user.getName(),       // 사용자 이름
                 user.getGroupId(),    // 그룹 ID
+                user.getUserId(),
                 new ArrayList<>()
         );
     }
