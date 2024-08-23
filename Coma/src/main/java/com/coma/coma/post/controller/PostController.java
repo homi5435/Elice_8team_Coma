@@ -8,13 +8,10 @@ import com.coma.coma.post.dto.Page;
 import com.coma.coma.post.dto.PostResponseDto;
 import com.coma.coma.post.service.PostService;
 import com.coma.coma.security.CustomUserDetails;
-import com.coma.coma.users.dto.UserDto;
+import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.service.UserService;
 import jakarta.annotation.Nullable;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -64,12 +61,28 @@ public class PostController {
 
     // 게시글 상세 페이지
     @GetMapping("/{postId}")
-    public String getPost(@PathVariable("postId") Integer postId, Model model) {
+    public String getPost(@PathVariable("postId") Integer postId, Model model,
+                          @Nullable @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         PostResponseDto postResponseDto = postService.findPost(postId);
+        // 글 작성자의 정보를 받아와 저장
+        UserResponseDto authorInfo = userService.getUserByUserId(postResponseDto.getUserId());
+
+        boolean isAuthor = false;   // 로그인 한 유저와 글 작성자가 일치하는지 확인
+        boolean isAdmin = false;    // 관리자 계정인지 확인
+
+        if(customUserDetails != null) {
+            isAuthor = customUserDetails.getUserId() == authorInfo.getUserId();
+            isAdmin = customUserDetails.getGroupId() == 1;  // group id가 1인 경우 -> 관리자인 경우 글 삭제 가능하도록
+        }
+
         List<Comment> comments = commentService.getCommentsByPostId(postId);
+
 
         model.addAttribute("post", postResponseDto);
         model.addAttribute("comments", comments);
+        model.addAttribute("isAuthor", isAuthor);
+        model.addAttribute("authorInfo", authorInfo);       // 글 작성자 정보 전달
+        model.addAttribute("isAdmin", isAdmin);             // 관리자 계정 확인
         return "post/post";
     }
 
