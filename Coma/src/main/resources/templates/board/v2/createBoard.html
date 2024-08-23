@@ -58,6 +58,7 @@
         >
             취소
         </button>
+        <input type="hidden" id="userId" th:value="${user.userId}">
     </form>
 </div>
 
@@ -93,10 +94,12 @@
         event.preventDefault();
         const board_title = document.querySelector('#board_title').value;
         const board_description = document.querySelector('#board_description').value;
+        const userId = document.querySelector('#userId').value;
 
         const send_param = {
             board_title,
-            board_description
+            board_description,
+            userId
         }
 
          axios.post('/api/v2/boards', send_param)
