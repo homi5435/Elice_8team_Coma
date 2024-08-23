@@ -1,23 +1,27 @@
 package com.coma.coma.board.advice;
 
 import com.coma.coma.board.exception.ErrorResult;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-// 지시사항을 참고하여 코드를 작성해 보세요.
 @RestControllerAdvice
+//@ControllerAdvice
 public class GlobalExceptionAdvice {
 
-    // 지시사항을 참고하여 코드를 작성해 보세요.
-    @ExceptionHandler
-    public ResponseEntity exceptionHandle(MethodArgumentNotValidException e) {
+    // 400 예외처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity badRequestHandle(MethodArgumentNotValidException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 
         List<ErrorResult.FieldError> errorLogs
@@ -31,4 +35,11 @@ public class GlobalExceptionAdvice {
 
         return new ResponseEntity<>(errorLogs, HttpStatus.BAD_REQUEST);
     }
+
+    // 404 예외처리
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public String notFoundHandle(NoHandlerFoundException e){
+        return "error/404.html";
+    }
+
 }
