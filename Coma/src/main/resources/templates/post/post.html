@@ -19,8 +19,16 @@
 
   <style>
       html,
-      body {
+      body{
           font-family: "Elice DX Neolli", sans-serif;
+      }
+      pre {
+          font-family:  "Elice DX Neolli", sans-serif;
+          white-space: pre-wrap;
+          max-width: 100%;
+          word-wrap: break-word; /* 긴 단어를 줄 바꿈 */
+          overflow-wrap: break-word; /* 단어가 컨테이너 너비를 넘을 때 줄 바꿈 */
+
       }
 
       .dropdown-toggle:after {
@@ -51,7 +59,28 @@
     <div class="header mb-3">
       <h2 class="text-start" th:text="${post.title}">게시글 제목</h2>
     </div>
-    <p class="m-0" th:text="${post.content}">게시글 내용</p>
+    <!-- User Info Section -->
+    <div class="d-flex justify-content-between">
+      <!-- 작성자 -->
+      <div class="text-start">
+        <strong th:text="${authorInfo.id}">User Name</strong>
+      </div>
+      <!-- 작성 시간 -->
+      <div class="text-end text-muted">
+        <span th:text="${post.createdDate}">2024-08-23 10:00</span>
+      </div>
+    </div>
+    <!-- 수정 시간 -->
+    <div class="d-flex justify-content-end">
+      <div class="text-end text-muted" th:if="${post.modifiedDate != null and post.modifiedDate > post.createdDate}">
+        Modified:
+        <span th:text="${post.modifiedDate}">2024-08-23 10:00</span>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <hr style="border-color: rgba(13, 110, 253, 1)">
+    <pre class="m-0" th:text="${post.content}">게시글 내용</pre>
     <hr class="mt-4" />
     <h4 class="mb-3">
       댓글
@@ -122,7 +151,7 @@
       </div>
     </form>
 
-    <div class="position-absolute top-0 end-0 mt-4 me-4">
+    <div class="position-absolute top-0 end-0 mt-4 me-4" th:if="${isAuthor || isAdmin}">
       <button
           class="btn btn-light lh-1 p-0 px-2 dropdown-toggle"
           type="button"
@@ -133,7 +162,8 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
         <li>
-          <button
+          <!-- 글 수정은 글 작성자인 경우에만 가능. 글 삭제는 관리자도 가능 -->
+          <button th:if="${isAuthor}"
               class="dropdown-item d-flex align-items-center gap-2"
               th:onclick="'location.href=\'/page/posts/edit/' + ${post.postId} + '\''"
           >
