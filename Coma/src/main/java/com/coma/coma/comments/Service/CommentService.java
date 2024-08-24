@@ -21,16 +21,16 @@ public class CommentService {
         return commentRepository.getCommentsByPostId(postId);
     }
 
-    public void addComment(CommentDto commentDto) {
-        commentRepository.addComment(commentDto);
+    public void addComment(Comment comment) {
+        commentRepository.addComment(comment);
     }
 
     public CommentDto getCommentById(int commentId) {
         return commentRepository.getCommentById(commentId);
     }
 
-    public void updateComment(CommentDto commentDto) {
-        commentRepository.updateComment(commentDto);
+    public void updateComment(Comment comment) {
+        commentRepository.updateComment(comment);
     }
 
     public void deleteComment(int commentId) {

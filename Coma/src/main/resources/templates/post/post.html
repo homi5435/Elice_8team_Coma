@@ -101,6 +101,7 @@
           th:each="comment : ${comments}"
       >
         <div class="card-body position-relative">
+          <p class="mb-2" th:text="${authorInfo.id}">User Name</p>
           <p class="mb-2" th:text="${comment.content}">댓글 내용</p>
           <small class="text-secondary" th:text="${comment.createdDate}">생성 일자</small>
 

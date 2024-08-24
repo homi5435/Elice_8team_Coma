@@ -4,9 +4,12 @@ import com.coma.coma.comments.Dto.CommentDto;
 import com.coma.coma.comments.Entity.Comment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -18,18 +21,19 @@ public class CommentRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void addComment(CommentDto comment) {
-        if(comment.getIsDelete() == null) comment.setIsDelete("N");
-        String sql = "INSERT INTO Comment (user_id, post_id, content, is_delete, created_date) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, 1);
-            ps.setInt(2, comment.getPostId());
-            ps.setString(3, comment.getContent());
-            ps.setString(4, comment.getIsDelete());
-            ps.setTimestamp(5, java.sql.Timestamp.valueOf(comment.getCreatedDate()));
-            return ps;
-        });
+    public void addComment(Comment comment) {
+            if(comment.getIsDelete() == null) comment.setIsDelete("N");
+            String sql = "INSERT INTO Comment (user_id, group_id, post_id, content, is_delete, created_date) VALUES (?, ?, ?, ?, ?, ?)";
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, comment.getUserId());
+                ps.setInt(2, comment.getGroupId());
+                ps.setInt(3, comment.getPostId());
+                ps.setString(4, comment.getContent());
+                ps.setString(5, comment.getIsDelete());
+                ps.setTimestamp(6, java.sql.Timestamp.valueOf(comment.getCreatedDate()));
+                return ps;
+            });
     }
 
     public List<Comment> getCommentsByPostId(int postId) {
@@ -64,7 +68,7 @@ public class CommentRepository {
         }, commentId);
     }
 
-    public void updateComment(CommentDto comment) {
+    public void updateComment(Comment comment) {
         String sql = "UPDATE Comment SET content = ?, modified_date = ? WHERE comment_id = ?";
         comment.updateModifiedDate();
         jdbcTemplate.update(sql, comment.getContent(), comment.getModifiedDate(), comment.getCommentId());
