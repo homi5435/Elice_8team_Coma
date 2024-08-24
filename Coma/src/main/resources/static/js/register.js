@@ -12,9 +12,8 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         return;
     }
 
-    // 전화번호 인증 완료 여부를 확인하는 로직 추가 필요 (예: verified 변수 사용)
     const verificationCode = document.getElementById('verificationCode').value;
-    if (!verificationCode || !isVerified) {  // isVerified는 인증 완료 여부를 나타내는 변수로 설정
+    if (!verificationCode || !isVerified) {  // isVerified는 인증 완료 여부를 나타내는 변수
         alert("전화번호 인증을 완료해주세요.");
         return;
     }
@@ -36,9 +35,9 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
     if (response.ok) {
         alert("회원가입이 완료되었습니다.");
-        window.location.href = window.location.origin + '/users/login'; // 절대 경로로 리다이렉트
+        window.location.href = window.location.origin + '/users/login';
     } else {
-        alert(result);  // 서버로부터의 에러 메시지를 경고창에 표시
+        alert(result);
     }
 });
 

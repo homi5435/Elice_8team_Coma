@@ -1,12 +1,10 @@
 package com.coma.coma.sms;
 
 import net.nurigo.sdk.NurigoApp;
-import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Random;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.http.ResponseEntity;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @RestController
 @RequestMapping("/api/sms")
