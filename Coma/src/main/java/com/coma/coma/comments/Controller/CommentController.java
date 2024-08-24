@@ -32,10 +32,10 @@ public class CommentController {
 
     @GetMapping("/{postId}")
     public String getComments(@PathVariable int postId, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
         List<Comment> comments = commentService.getCommentsByPostId(postId);
         model.addAttribute("comments", comments);
         model.addAttribute("postId", postId);
-        model.addAttribute("user", customUserDetails);
         return "post/post";
     }
 
@@ -44,9 +44,12 @@ public class CommentController {
         if(customUserDetails == null){
             return "redirect:/users/login";
         }
+        int userId = customUserDetails.getUserId();
+        UserResponseDto userResponseDto = userService.getUserByUserId(userId);
         Comment comment = commentMapper.toEntity(commentDto);
-        comment.setUserId(customUserDetails.getUserId());
+        comment.setUserId(userId);
         comment.setGroupId(customUserDetails.getGroupId());
+        comment.setId(userResponseDto.getId());
         commentService.addComment(comment);
         return "redirect:/page/posts/" + comment.getPostId();
     }
