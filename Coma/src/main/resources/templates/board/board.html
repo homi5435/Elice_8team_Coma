@@ -66,8 +66,7 @@
   <div class="list-group position-relative mb-3">
     <a
         class="board-item list-group-item p-3 list-group-item-action"
-        th:unless="${posts.contents.isEmpty()}"
-        th:each="post : ${posts.contents}"
+        th:each="post : ${posts.content}"
         th:href="@{/page/posts/{postId}(postId=${post.postId})}"
     >
       <h4 class="fw-bold mb-1" th:text="${post.title}">게시글 제목</h4>
@@ -75,26 +74,37 @@
       >게시글 생성일</small>
     </a>
     <span
-        th:if="${posts.contents.isEmpty()}"
+        th:if="${#lists.isEmpty(posts.content)}"
         class="text-center"
         th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}">
     </span>
   </div>
   <div class="w-100 d-flex justify-content-center">
     <ul class="pagination">
-      <li th:each="i : ${#numbers.sequence(0, posts.totalPages - 1)}"
+      <!-- Previous Page Link -->
+      <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+        <a class="page-link"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${currentPage - 1}, size=${posts.size}, keyword=${keyword})}"
+           th:text="'&laquo; 이전'"/>
+      </li>
+
+      <!-- Page Number Links -->
+      <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
           class="page-item"
-          th:classappend="${i + 1 == posts.number ? 'active' : ''}">
-        <a
-            class="page-link"
-            th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${i + 1}, size=${size}, keyword=${keyword})}"
-            th:text="${i + 1}"
-        >1</a
-        >
+          th:classappend="${i == currentPage ? 'active' : ''}">
+        <a class="page-link"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${i}, size=${posts.size}, keyword=${keyword})}"
+           th:text="${i}"/>
+      </li>
+
+      <!-- Next Page Link -->
+      <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+        <a class="page-link"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${currentPage + 1}, size=${posts.size}, keyword=${keyword})}"
+           th:text="'다음 &raquo;'"/>
       </li>
     </ul>
-  </div>
-</div>
+  </div></div>
 
 <!-- 부트스트랩 JS 추가 -->
 <script
@@ -148,10 +158,10 @@
     });
 
     $(document).on('keydown', function (e) {
-        if (e.keyCode == 91  e.keyCode == 18) {
+        if (e.keyCode == 91 || e.keyCode == 18) {
             closing_window = false;
         }
-        if (e.keyCode == 116  (e.ctrlKey && e.keyCode == 82)) {
+        if (e.keyCode == 116 || (e.ctrlKey && e.keyCode == 82)) {
             closing_window = false;
         }
     });
