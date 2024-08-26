@@ -34,12 +34,12 @@ public class PostService {
     // update
     public PostResponseDto updatePost(Integer postId, PostRequestDto postRequestDto) {
         Post targetPost = postRepository.findById(postId).orElseThrow(NoSuchElementException::new);
-        targetPost.setTitle(postRequestDto.getTitle());
-        targetPost.setContent(postRequestDto.getContent());
+        targetPost.update(postRequestDto);
         postRepository.save(targetPost);
 
         return postMapper.toResponseDto(targetPost);
     }
+
 
     // postId로 Post 가져오기
     public PostResponseDto findPost(Integer postId) {
