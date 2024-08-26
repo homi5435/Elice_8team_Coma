@@ -73,7 +73,8 @@ public class PostController {
 
         // 보여줄 페이지 계산
         int totalPages = posts.getTotalPages();
-        int startPage = Math.max(1, posts.getNumber() / 10 * 10);
+        int currentPage = posts.getNumber() + 1;        // 페이지 번호를 1부터 시작하게
+        int startPage = Math.max(1, (currentPage - 1) / 10 * 10 + 1);
         int endPage = Math.min(totalPages, startPage + 9);
 
         Board board = boardService.findOne(boardId);
@@ -83,7 +84,7 @@ public class PostController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("currentPage", posts.getNumber() + 1);
+        model.addAttribute("currentPage", currentPage);
         return "board/board";
     }
 
