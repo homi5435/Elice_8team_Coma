@@ -25,7 +25,7 @@ public class CommentService {
         commentRepository.addComment(comment);
     }
 
-    public CommentDto getCommentById(int commentId) {
+    public Comment getCommentById(int commentId) {
         return commentRepository.getCommentById(commentId);
     }
 
