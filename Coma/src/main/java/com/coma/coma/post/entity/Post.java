@@ -1,5 +1,6 @@
 package com.coma.coma.post.entity;
 
+import com.coma.coma.post.dto.PostRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,11 @@ public class Post {
 
     public void updateModifiedDate() {
         this.modifiedDate = LocalDateTime.now();
+    }
+
+    public void update(PostRequestDto postRequestDto) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
     }
 
 }
