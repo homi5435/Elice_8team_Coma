@@ -9,6 +9,7 @@ import com.coma.coma.security.CustomUserDetails;
 import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.service.UserService;
 import jakarta.annotation.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,42 +31,54 @@ public class CommentController {
         this.commentMapper = commentMapper;
     }
 
-    @GetMapping("/{postId}")
-    public String getComments(@PathVariable int postId, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        List<Comment> comments = commentService.getCommentsByPostId(postId);
-        model.addAttribute("comments", comments);
-        model.addAttribute("postId", postId);
-        return "post/post";
-    }
-
     @PostMapping
     public String addComment(@ModelAttribute CommentDto commentDto, @Nullable @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if(customUserDetails == null){
+            // 로그인이 안되었을 경우 로그인 페이지로 이동
             return "redirect:/users/login";
+        } else {
+            int userId = customUserDetails.getUserId();
+            UserResponseDto userResponseDto = userService.getUserByUserId(userId);
+            Comment comment = commentMapper.toEntity(commentDto);
+            comment.setUserId(userId);
+            comment.setGroupId(customUserDetails.getGroupId());
+            comment.setId(userResponseDto.getId());
+            commentService.addComment(comment);
+            return "redirect:/page/posts/" + comment.getPostId();
         }
-        int userId = customUserDetails.getUserId();
-        UserResponseDto userResponseDto = userService.getUserByUserId(userId);
-        Comment comment = commentMapper.toEntity(commentDto);
-        comment.setUserId(userId);
-        comment.setGroupId(customUserDetails.getGroupId());
-        comment.setId(userResponseDto.getId());
-        commentService.addComment(comment);
-        return "redirect:/page/posts/" + comment.getPostId();
     }
 
+    @PreAuthorize("commentService.commentOwner(#commentId, #customUserDetails.userId)")
     @PostMapping("/{commentId}/update")
-    public String editComment(@ModelAttribute CommentDto commentDto) {
+    public String updateComment(@ModelAttribute CommentDto commentDto,
+                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
         Comment comment = commentMapper.toEntity(commentDto);
-        commentService.updateComment(comment);
+        int userId = commentService.getCommentById(comment.getCommentId()).getUserId();
+        UserResponseDto commentAuthor = userService.getUserByUserId(userId);
         int postId = commentService.getPostIdByCommentId(comment.getCommentId());
+
+        if (customUserDetails != null && customUserDetails.getUserId() == commentAuthor.getUserId()){
+            commentService.updateComment(comment);
+        }
         return "redirect:/page/posts/" + postId;
+
     }
 
+    @PreAuthorize("commentService.commentOwner(#commentId, #customUserDetails.userId) or #customUserDetails.groupId = 1")
     @PostMapping("/{commentId}/delete")
-    public String deleteComment(@PathVariable int commentId) {
+    public String deleteComment(@PathVariable int commentId,
+                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        Comment comment = commentService.getCommentById(commentId);
         int postId = commentService.getPostIdByCommentId(commentId);
-        commentService.deleteComment(commentId);
+        UserResponseDto commentAuthor = userService.getUserByUserId(comment.getUserId());
+
+        if (customUserDetails != null){
+            if (customUserDetails.getUserId() == commentAuthor.getUserId() || customUserDetails.getGroupId() == 1){
+                commentService.deleteComment(commentId);
+            }
+        }
         return "redirect:/page/posts/" + postId;
     }
 }
