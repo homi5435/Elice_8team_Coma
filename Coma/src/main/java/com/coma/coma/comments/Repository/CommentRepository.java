@@ -52,7 +52,7 @@ public class CommentRepository {
     }
 
     public Comment getCommentById(int commentId) {
-        String sql = "SELECT * FROM Comment WHERE comment_id = ?";
+        String sql = "SELECT * FROM Comment WHERE comment_id = ? AND is_delete = 'N'";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Comment comment = new Comment();
             comment.setCommentId(rs.getInt("comment_id"));

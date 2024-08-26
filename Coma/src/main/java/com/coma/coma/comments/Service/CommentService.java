@@ -25,7 +25,7 @@ public class CommentService {
         commentRepository.addComment(comment);
     }
 
-    public Comment getCommentById(int commentId) {
+    public Comment getCommentById(Integer commentId) {
         return commentRepository.getCommentById(commentId);
     }
 
@@ -33,11 +33,16 @@ public class CommentService {
         commentRepository.updateComment(comment);
     }
 
-    public void deleteComment(int commentId) {
+    public void deleteComment(Integer commentId) {
         commentRepository.deleteComment(commentId);
     }
 
-    public int getPostIdByCommentId(int commentId) {
+    public int getPostIdByCommentId(Integer commentId) {
         return commentRepository.getPostIdByCommentId(commentId);
+    }
+
+    public boolean commentOwner(Integer commentId, Integer userId){
+        Comment comment = commentRepository.getCommentById(commentId);
+        return comment.getUserId().equals(userId);
     }
 }
