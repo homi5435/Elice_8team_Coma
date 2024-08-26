@@ -7,13 +7,12 @@ import lombok.Setter;
 
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class BoardUpdateRequest {
 
     @NotBlank(message = "제목은 공백일 수 없습니다.")
-    private String board_title;
+    private String boardTitle;
 
     @NotBlank(message = "설명은 공백일 수 없습니다.")
-    private String board_description;
+    private String boardDescription;
 }

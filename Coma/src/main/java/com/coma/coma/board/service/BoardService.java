@@ -23,17 +23,17 @@ public class BoardService {
         return boardRepository.findById(boardId).orElseThrow(() -> new RuntimeException());
     }
 
-    public Board createBoard(Board board) {
-        return boardRepository.save(board);
+    public void createBoard(Board board) {
+        boardRepository.upsert(board);
     }
 
     public void updateBoard(Long boardId, BoardUpdateRequest boardUpdateRequest) {
         Board targetBoard = findOne(boardId);
 
-        targetBoard.setBoard_title(boardUpdateRequest.getBoard_title());
-        targetBoard.setBoard_description(boardUpdateRequest.getBoard_description());
+        targetBoard.setBoardTitle(boardUpdateRequest.getBoardTitle());
+        targetBoard.setBoardDescription(boardUpdateRequest.getBoardDescription());
 
-        boardRepository.save(targetBoard);
+        boardRepository.upsert(targetBoard);
     }
     public void deleteBoard(long boardId) {
 
