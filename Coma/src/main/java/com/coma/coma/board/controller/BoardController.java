@@ -33,6 +33,11 @@ public class BoardController {
         return "board/boards";
     }
 
+    /*
+    // 개발 초창기에 정의한 /api/boards get요청(게시판 목록으로 화면이동)을 게시글, 로그인 화면등 다른곳에서 사용중
+    // 그렇기 때문에 v2패키지 하위에 뷰 컨트롤러(/v2/boards)로 전환하지 않고 기존 url을 사용
+    // 아래 주석된 내용은 현재 사용안함(v2 패키지에 apiController, viewController로 분리함)
+
     // 게시판 추가 화면 이동
     @GetMapping("/create")
     public String createForm() {
@@ -69,5 +74,7 @@ public class BoardController {
         boardService.deleteBoard(boardId);
         return "redirect:/api/boards";
     }
+
+     */
 
 }
