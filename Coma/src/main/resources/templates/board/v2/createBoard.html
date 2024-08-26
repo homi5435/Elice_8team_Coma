@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+    <link
+            href="https://font.elice.io/css?family=Elice+DX+Neolli"
+            rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        html,
+        body {
+          font-family: "Elice DX Neolli", sans-serif;
+        }
+    </style>
+    <title>게시판 추가</title>
+</head>
+<body>
+<div class="container my-5">
+    <div class="header mb-5">
+        <h1 class="text-center">게시판 추가</h1>
+    </div>
+    <form>
+        <div class="mb-3">
+            <label for="boardTitle">게시판 이름</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="boardTitle"
+                    name="boardTitle"
+                    maxlength="20"
+                    placeholder="게시판 이름 입력 (최대 20자)"
+                    required
+            />
+        </div>
+        <div class="mb-3">
+            <label for="boardDescription">게시판 설명</label>
+            <textarea
+                    class="form-control"
+                    id="boardDescription"
+                    name="boardDescription"
+                    maxlength="200"
+                    placeholder="게시판 설명 입력 (최대 200자)"
+            ></textarea>
+        </div>
+        <button onclick="createPost(event)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">게시판 추가</button>
+        <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="window.history.back();"
+        >
+            취소
+        </button>
+        <input type="hidden" id="userId" th:value="${user.userId}">
+    </form>
+</div>
+
+<div
+        class="modal fade"
+        id="createModal"
+        tabindex="-1"
+        aria-labelledby="createModalLabel"
+        aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="createModalLabel">
+                    오류
+                </h1>
+                <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-light" id="errorList">게시판에 포함된 모든 게시글이 삭제됩니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const createPost=(event)=>{
+        event.preventDefault();
+        const boardTitle = document.querySelector('#boardTitle').value;
+        const boardDescription = document.querySelector('#boardDescription').value;
+        const userId = document.querySelector('#userId').value;
+
+        const send_param = {
+            boardTitle,
+            boardDescription,
+            userId
+        }
+
+         axios.post('/api/v2/boards', send_param)
+            .then(function(response) {
+              console.log(response);
+              window.location.href = "/api/boards"
+            })
+            .catch(function(error) {
+              console.log(error);
+
+              const errorData = error.response.data;
+
+              // 데이터를 표시할 HTML 요소를 찾습니다.
+              const resultDiv = document.getElementById('errorList');
+              console.log("errorData : ", errorData);
+
+              // 기존의 내용을 비웁니다.
+              resultDiv.innerHTML = '';
+
+              // 데이터를 반복하면서 화면에 추가합니다.
+              errorData.forEach(data => {
+                      // 각 데이터 항목을 하나의 HTML 블록으로 만들어서 추가합니다.
+                      const item = document.createElement('div');
+                      item.innerHTML = `<p>${data.fieldName} : ${data.message}</p>`;
+                      resultDiv.appendChild(item);
+                  });
+             });
+    }
+</script>
+<!-- 부트스트랩 JS 추가 -->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"
+>
+</script>
+</body>
+</html>

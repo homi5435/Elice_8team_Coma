@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+  />
+  <link
+      href="https://font.elice.io/css?family=Elice+DX+Neolli"
+      rel="stylesheet"
+  />
+  <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+  />
+
+  <style>
+      html,
+      body {
+          font-family: "Elice DX Neolli", sans-serif;
+      }
+  </style>
+  <title th:text="${board.boardTitle}"></title>
+</head>
+<body>
+<!-- 공통 헤더 포함 -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container my-5">
+  <a
+      class="link link-offset-1 link-offset-2-hover text-sm fs-6 mb-2 d-block"
+      style="transition: all 0.1s ease-in-out"
+      th:href="@{/api/boards}"
+  >&larr; 게시판 목록으로 돌아가기</a
+  >
+  <div class="header mb-5">
+    <h1 class="text-center" th:text="${board.boardTitle}">게시판 제목</h1>
+    <p
+        class="text-center text-secondary"
+        th:text="${board.boardDescription}"
+    ></p>
+  </div>
+  <div class="d-flex w-100 justify-content-between mb-3">
+    <form>
+      <div class="input-group">
+        <input
+            class="form-control"
+            name="keyword"
+            placeholder="키워드 검색"
+            th:value="${keyword}"/>
+
+        <button class="btn btn-primary lh-1 p-0 px-2">
+          <span class="material-symbols-outlined"> search </span>
+        </button>
+      </div>
+    </form>
+    <a th:if="${isAuthenticated}"
+        th:href="@{/page/posts/new/{boardId}(boardId=${board.boardId})}"
+        class="btn btn-primary"
+    >게시글 추가</a
+    >
+  </div>
+  <div class="list-group position-relative mb-3">
+    <a
+        class="board-item list-group-item p-3 list-group-item-action"
+        th:each="post : ${posts.content}"
+        th:href="@{/page/posts/{postId}(postId=${post.postId})}"
+    >
+      <h4 class="fw-bold mb-1" th:text="${post.title}">게시글 제목</h4>
+      <small class="text-secondary" th:text="${post.createdDate}"
+      >게시글 생성일</small>
+    </a>
+    <span
+        th:if="${#lists.isEmpty(posts.content)}"
+        class="text-center"
+        th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}">
+    </span>
+  </div>
+  <div class="w-100 d-flex justify-content-center">
+    <ul class="pagination">
+      <!-- Previous Page Link -->
+      <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+        <a class="page-link"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId}, page=${currentPage - 1}, size=${posts.size}, keyword=${keyword})}"
+           th:text="'&laquo; 이전'"/>
+      </li>
+
+      <!-- Page Number Links -->
+      <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+          class="page-item"
+          th:classappend="${i == currentPage ? 'active' : ''}">
+        <a class="page-link"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId}, page=${i}, size=${posts.size}, keyword=${keyword})}"
+           th:text="${i}"/>
+      </li>
+
+      <!-- Next Page Link -->
+      <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+        <a class="page-link"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId}, page=${currentPage + 1}, size=${posts.size}, keyword=${keyword})}"
+           th:text="'다음 &raquo;'"/>
+      </li>
+    </ul>
+  </div></div>
+
+<!-- 부트스트랩 JS 추가 -->
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"
+></script>
+<script>
+    function performLogout() {
+        fetch('/api/users/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.replace(window.location.origin + window.location.pathname);
+                } else {
+                    alert('로그아웃에 실패했습니다.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var closing_window = false;
+
+    $(window).on('focus', function () {
+        closing_window = false;
+    });
+
+    $(window).on('blur', function () {
+        closing_window = true;
+        if (!document.hidden) {
+            closing_window = false;
+        }
+        $(window).on('resize', function (e) {
+            closing_window = false;
+        });
+        $(window).off('resize');
+    });
+
+    $('html').on('mouseleave', function () {
+        closing_window = true;
+    });
+
+    $('html').on('mouseenter', function () {
+        closing_window = false;
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.keyCode == 91 || e.keyCode == 18) {
+            closing_window = false;
+        }
+        if (e.keyCode == 116 || (e.ctrlKey && e.keyCode == 82)) {
+            closing_window = false;
+        }
+    });
+
+    $(document).on("click", "a", function () {
+        closing_window = false;
+    });
+
+    $(document).on("click", "button", function () {
+        closing_window = false;
+    });
+
+    $(document).on("submit", "form", function () {
+        closing_window = false;
+    });
+
+    var toDoWhenClosing = function () {
+        fetch('/api/users/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    };
+
+    window.addEventListener("beforeunload", function (e) {
+        if (closing_window) {
+            toDoWhenClosing();
+        }
+    });
+
+</script>
+</body>
+</html>
