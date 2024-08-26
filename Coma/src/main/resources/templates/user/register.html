@@ -20,7 +20,13 @@
     </div>
     <div class="form-group">
       <label for="phoneNumber">전화번호</label>
-      <input type="text" id="phoneNumber" name="phoneNumber" placeholder="전화번호 입력" required>
+      <input type="text" id="phoneNumber" name="phoneNumber" placeholder="전화번호 입력" pattern="010\d{8}" title="전화번호는 010xxxxxxxx 형태로 입력해야 합니다." required>
+      <button type="button" onclick="sendVerificationCode()">인증</button>
+    </div>
+    <div class="form-group" id="verificationSection" style="display: none;">
+      <label for="verificationCode">인증번호</label>
+      <input type="text" id="verificationCode" name="verificationCode" placeholder="인증번호 입력">
+      <button type="button" onclick="verifyCode()">확인</button>
     </div>
     <div class="form-group">
       <label for="password">비밀번호</label>
