@@ -4,13 +4,15 @@ import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
 import com.coma.coma.comments.Entity.Comment;
 import com.coma.coma.comments.Service.CommentService;
-import com.coma.coma.post.dto.Page;
 import com.coma.coma.post.dto.PostResponseDto;
 import com.coma.coma.post.service.PostService;
 import com.coma.coma.security.CustomUserDetails;
 import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.service.UserService;
 import jakarta.annotation.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -60,16 +62,28 @@ public class PostController {
                            @RequestParam(value = "keyword", required = false) String keyword,
                            Model model) {
         Page<PostResponseDto> posts;
+        Pageable pageable = PageRequest.of(page - 1, size); // 페이지 번호는 0부터 시작하므로 -1
+
 
         if (keyword != null && !keyword.isEmpty()) {
-            posts = postService.findByKeywordWithPagination(boardId, keyword, page, size);
+            posts = postService.findByKeywordWithPagination(boardId, keyword, pageable);
         } else {
-            posts = postService.getPostsWithPagination(boardId, page, size);
+            posts = postService.getPostsWithPagination(boardId, pageable);
         }
+
+        // 보여줄 페이지 계산
+        int totalPages = posts.getTotalPages();
+        int startPage = Math.max(1, posts.getNumber() / 10 * 10);
+        int endPage = Math.min(totalPages, startPage + 9);
+
         Board board = boardService.findOne(boardId);
         model.addAttribute("posts", posts);
         model.addAttribute("board", board);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", posts.getNumber() + 1);
         return "board/board";
     }
 

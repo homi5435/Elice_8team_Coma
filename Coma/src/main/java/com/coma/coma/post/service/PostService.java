@@ -1,11 +1,13 @@
 package com.coma.coma.post.service;
 
-import com.coma.coma.post.dto.Page;
 import com.coma.coma.post.dto.PostRequestDto;
 import com.coma.coma.post.dto.PostResponseDto;
 import com.coma.coma.post.entity.Post;
 import com.coma.coma.post.mapper.PostMapper;
 import com.coma.coma.post.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,25 +77,27 @@ public class PostService {
 
     // 페이지네이션 적용
     // 특정 게시판의 포스트 가져오기(pagination 적용)
-    public Page<PostResponseDto> getPostsWithPagination(Long boardId, int page, int size) {
-        List<Post> posts = postRepository.getPostsWithPagination(boardId, page, size);
-        int totalPosts = postRepository.countPostsInBoard(boardId);
-        int totalPages = (int) Math.ceil((double) totalPosts / size);
-        List<PostResponseDto> postDtos = posts.stream()
+    public Page<PostResponseDto> getPostsWithPagination(Long boardId, Pageable pageable) {
+        Page<Post> postPages = postRepository.getPostsWithPagination(boardId, pageable);
+        List<PostResponseDto> responseDtos = postPages.getContent().stream()
                 .map(postMapper::toResponseDto)
                 .collect(Collectors.toList());
-
-        return new Page<>(postDtos, page, size, totalPosts, totalPages);
+        return new PageImpl<>(responseDtos, pageable, postPages.getTotalElements());
     }
 
     // 키워드 이용 검색 - 페이지네이션 적용
-    public Page<PostResponseDto> findByKeywordWithPagination(Long boardId, String keyword, int page, int size) {
-        List<Post> posts = postRepository.findByKeywordWithPagination(boardId, keyword, page, size );
-        List<PostResponseDto> postResponseDtos = posts.stream()
-                .map(post -> postMapper.toResponseDto(post))
+    public Page<PostResponseDto> findByKeywordWithPagination(Long boardId, String keyword, Pageable pageable) {
+//        List<Post> posts = postRepository.findByKeywordWithPagination(boardId, keyword, page, size );
+//        List<PostResponseDto> postResponseDtos = posts.stream()
+//                .map(post -> postMapper.toResponseDto(post))
+//                .collect(Collectors.toList());
+//        int totalPosts = postRepository.countPostsInSearchResult(boardId, keyword);
+//        int totalPages = (int) Math.ceil((double) totalPosts / size);
+//        return new Page<>(postResponseDtos, page, size, totalPosts, totalPages);
+        Page<Post> searchResults = postRepository.findByKeywordWithPagination(boardId, keyword, pageable);
+        List<PostResponseDto> searchResultsList = searchResults.getContent().stream()
+                .map(postMapper::toResponseDto)
                 .collect(Collectors.toList());
-        int totalPosts = postRepository.countPostsInSearchResult(boardId, keyword);
-        int totalPages = (int) Math.ceil((double) totalPosts / size);
-        return new Page<>(postResponseDtos, page, size, totalPosts, totalPages);
+        return new PageImpl<>(searchResultsList, pageable, searchResults.getTotalElements());
     }
 }

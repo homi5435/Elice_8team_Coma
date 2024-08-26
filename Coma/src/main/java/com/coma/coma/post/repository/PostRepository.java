@@ -3,6 +3,9 @@ package com.coma.coma.post.repository;
 import com.coma.coma.post.entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -149,14 +152,17 @@ public class PostRepository {
 
     // Pagination 적용
     // READ - pagination
-    public List<Post> getPostsWithPagination(Long boardId, int page, int size) {
-        int offset = Math.max((page - 1) * size, 0); // 페이지 번호가 1부터 시작하는 경우
+    public Page<Post> getPostsWithPagination(Long boardId, Pageable pageable) {
+        int limit = pageable.getPageSize();
+        long offset = pageable.getOffset();
+        int total = countPostsInBoard(boardId);
         String sql = "SELECT * FROM post " +
                 "WHERE board_id = ? " +
                 "AND is_delete = 'N' " +
                 "ORDER BY created_date DESC " +
                 "LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{boardId, size, offset}, postRowMapper());
+        List<Post> posts =  jdbcTemplate.query(sql, new Object[]{boardId, limit, offset}, postRowMapper());
+        return new PageImpl<>(posts, pageable, total);
     }
 
 
@@ -181,8 +187,10 @@ public class PostRepository {
     }
 
     // search - with keyword and pagination
-    public List<Post> findByKeywordWithPagination(Long boardId, String keyword, int page, int size) {
-        int offset = Math.max((page - 1) * size, 0);
+    public Page<Post> findByKeywordWithPagination(Long boardId, String keyword, Pageable pageable) {
+        int limit = pageable.getPageSize();
+        long offset = pageable.getOffset();
+        int total = countPostsInSearchResult(boardId, keyword);
         String sql = "SELECT * FROM post " +
                 "WHERE board_id = ? " +
                 "AND is_delete = 'N' " +
@@ -190,12 +198,14 @@ public class PostRepository {
                 "ORDER BY created_date DESC " +
                 "LIMIT ? OFFSET ?";
 
-        return jdbcTemplate.query(sql, new Object[]{
+        List<Post> searchResults =  jdbcTemplate.query(sql, new Object[]{
                 boardId,
                 "%" + keyword + "%",
                 "%" + keyword + "%",
-                size,
+                limit,
                 offset
         }, postRowMapper());
+
+        return new PageImpl<>(searchResults, pageable, total);
     }
 }
