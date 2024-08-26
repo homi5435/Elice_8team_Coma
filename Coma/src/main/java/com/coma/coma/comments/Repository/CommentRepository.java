@@ -1,15 +1,11 @@
 package com.coma.coma.comments.Repository;
 
-import com.coma.coma.comments.Dto.CommentDto;
 import com.coma.coma.comments.Entity.Comment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -23,15 +19,16 @@ public class CommentRepository {
 
     public void addComment(Comment comment) {
             if(comment.getIsDelete() == null) comment.setIsDelete("N");
-            String sql = "INSERT INTO Comment (user_id, group_id, post_id, content, is_delete, created_date) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Comment (user_id, group_id, id, post_id, content, is_delete, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setInt(1, comment.getUserId());
                 ps.setInt(2, comment.getGroupId());
-                ps.setInt(3, comment.getPostId());
-                ps.setString(4, comment.getContent());
-                ps.setString(5, comment.getIsDelete());
-                ps.setTimestamp(6, java.sql.Timestamp.valueOf(comment.getCreatedDate()));
+                ps.setString(3, comment.getId());
+                ps.setInt(4, comment.getPostId());
+                ps.setString(5, comment.getContent());
+                ps.setString(6, comment.getIsDelete());
+                ps.setTimestamp(7, java.sql.Timestamp.valueOf(comment.getCreatedDate()));
                 return ps;
             });
     }
@@ -42,6 +39,7 @@ public class CommentRepository {
             Comment comment = new Comment();
             comment.setCommentId(rs.getInt("comment_id"));
             comment.setUserId(rs.getInt("user_id"));
+            comment.setId(rs.getString("id"));
             comment.setPostId(rs.getInt("post_id"));
             comment.setContent(rs.getString("content"));
             comment.setIsDelete(rs.getString("is_delete"));
@@ -53,12 +51,13 @@ public class CommentRepository {
         return jdbcTemplate.query(sql, rowMapper, postId);
     }
 
-    public CommentDto getCommentById(int commentId) {
+    public Comment getCommentById(int commentId) {
         String sql = "SELECT * FROM Comment WHERE comment_id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-            CommentDto comment = new CommentDto();
+            Comment comment = new Comment();
             comment.setCommentId(rs.getInt("comment_id"));
             comment.setUserId(rs.getInt("user_id"));
+            comment.setId(rs.getString("id"));
             comment.setPostId(rs.getInt("post_id"));
             comment.setContent(rs.getString("content"));
             comment.setIsDelete(rs.getString("is_delete"));
