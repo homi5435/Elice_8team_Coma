@@ -13,7 +13,7 @@ public interface BoardRepository {
     Optional<Board> findById(Long BoardId);
 
 
-    Board save(Board board);
+    void upsert(Board board);
 
     void delete(Board board);
 }

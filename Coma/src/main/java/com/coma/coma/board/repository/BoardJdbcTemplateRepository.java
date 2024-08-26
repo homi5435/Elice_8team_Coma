@@ -61,7 +61,7 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
     }
 
     @Override
-    public Board save(Board board) {
+    public void upsert(Board board) {
 
         if (board.getBoard_id() == null) {
             // Insert new contact and retrieve generated contactId
@@ -96,8 +96,6 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
                     board.getBoard_title(), board.getBoard_description(), Timestamp.valueOf(LocalDateTime.now()), board.getBoard_id()
             );
         }
-        return board;
-
     }
 
     @Override
