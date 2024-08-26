@@ -2,6 +2,7 @@ package com.coma.coma.post.controller;
 
 import com.coma.coma.board.entity.Board;
 import com.coma.coma.board.service.BoardService;
+import com.coma.coma.comments.Dto.CommentDto;
 import com.coma.coma.comments.Entity.Comment;
 import com.coma.coma.comments.Service.CommentService;
 import com.coma.coma.post.dto.PostResponseDto;
@@ -96,7 +97,9 @@ public class PostController {
         UserResponseDto authorInfo = userService.getUserByUserId(postResponseDto.getUserId());
 
         Integer loggedInUserId = (Integer) model.getAttribute("userId");
+        Integer loggedInUserGroupId = (Integer) model.getAttribute("groupId");
         boolean isAuthor = loggedInUserId != null && loggedInUserId.equals(authorInfo.getUserId());
+
 
         List<Comment> comments = commentService.getCommentsByPostId(postId);
 
@@ -105,6 +108,8 @@ public class PostController {
         model.addAttribute("comments", comments);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("authorInfo", authorInfo);       // 글 작성자 정보 전달
+        model.addAttribute("loggedInUserId", loggedInUserId); // 현재 로그인 한 유저 User_Id 전달
+        model.addAttribute("loggedInUserGroupId",loggedInUserGroupId);
         return "post/post";
     }
 
