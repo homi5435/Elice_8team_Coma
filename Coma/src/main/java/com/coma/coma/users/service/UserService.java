@@ -1,13 +1,18 @@
 package com.coma.coma.users.service;
 
+import com.coma.coma.sms.SmsController;
 import com.coma.coma.users.domain.Users;
 import com.coma.coma.users.dto.UserDto;
 import com.coma.coma.users.dto.UserResponseDto;
 import com.coma.coma.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -16,6 +21,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private SmsController smsController;
+
+    @Autowired
+    public void setSmsController(@Lazy SmsController smsController) {
+        this.smsController = smsController;
+    }
 
 
     public UserResponseDto getUserByUserId(int user_id) {
@@ -83,4 +94,27 @@ public class UserService {
     public boolean checkDuplicateId(String id) {
         return userRepository.existsById(id);
     }
+
+    public void sendVerificationCode(String phoneNumber) {
+        smsController.sendOne(Map.of("phoneNumber", phoneNumber));
+    }
+
+    // 사용자 존재 여부 확인 메서드(비밀번호 찾기)
+    public boolean checkUserExists(String id, String phoneNumber) {
+        return userRepository.existsByIdAndPhoneNumber(id, phoneNumber);
+    }
+
+    // 비밀번호 재설정 메서드
+    public void resetPassword(String id, String phoneNumber, String newPassword) {
+        if (!checkUserExists(id, phoneNumber)) {
+            throw new IllegalArgumentException("해당 아이디와 전화번호를 가진 사용자가 존재하지 않습니다.");
+        }
+
+        Users user = userRepository.findByUserIdName(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.update(user);
+    }
+
 }
