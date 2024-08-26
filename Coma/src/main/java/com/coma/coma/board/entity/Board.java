@@ -15,29 +15,29 @@ import java.time.LocalDateTime;
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long board_id;
+    private Long boardId;
 
-    private Long user_id;
+    private Long userId;
 
     @Column(nullable = false, unique = true)
-    private String board_title;
+    private String boardTitle;
 
     @Column(nullable = false)
-    private String board_description;
+    private String boardDescription;
 
     @Column(nullable = false)
-    private String is_delete = "N";
+    private String isDelete = "N";
 
     @Column
-    private LocalDateTime created_date;
+    private LocalDateTime createdDate;
 
     @Column
-    private LocalDateTime modified_date;
+    private LocalDateTime modifiedDate;
 
 
     public Board(Long user_id, String board_title, String board_description) {
-        this.user_id = user_id;
-        this.board_title = board_title;
-        this.board_description = board_description;
+        this.userId = user_id;
+        this.boardTitle = board_title;
+        this.boardDescription = board_description;
     }
 }

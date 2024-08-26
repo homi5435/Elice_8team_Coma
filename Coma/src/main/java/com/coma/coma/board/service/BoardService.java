@@ -30,8 +30,8 @@ public class BoardService {
     public void updateBoard(Long boardId, BoardUpdateRequest boardUpdateRequest) {
         Board targetBoard = findOne(boardId);
 
-        targetBoard.setBoard_title(boardUpdateRequest.getBoard_title());
-        targetBoard.setBoard_description(boardUpdateRequest.getBoard_description());
+        targetBoard.setBoardTitle(boardUpdateRequest.getBoardTitle());
+        targetBoard.setBoardDescription(boardUpdateRequest.getBoardDescription());
 
         boardRepository.upsert(targetBoard);
     }

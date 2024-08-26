@@ -75,7 +75,7 @@
                 >
                     <a
                             class="board-item pe-auto p-3 link-underline link-underline-opacity-0 d-flex"
-                            th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id})}"
+                            th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId})}"
                     >
                         <img
                                 class="img-thumbnail w-50 h-50 me-3"
@@ -85,13 +85,13 @@
                         <div>
                             <h4
                                     class="card-title fw-bold text-dark"
-                                    th:text="${board.board_title}"
+                                    th:text="${board.boardTitle}"
                             >
                                 게시판 이름
                             </h4>
                             <span
                                     class="card-text text-secondary text-wrap"
-                                    th:text="${board.board_description}"
+                                    th:text="${board.boardDescription}"
                             >게시판 설명</span
                             >
                         </div>
@@ -101,19 +101,19 @@
                                 role="group"
                                 aria-label="edit-delete"
 
-                                th:if="${user != null &&board.user_id == user.userId}"
+                                th:if="${user != null &&board.userId == user.userId}"
                         >
-                            <!--                            <button class="btn btn-outline-primary lh-1" th:onclick="'event.preventDefault(); location.href=\'/api/boards/' + ${board.board_id} + '/edit\''">-->
+                            <!--                            <button class="btn btn-outline-primary lh-1" th:onclick="'event.preventDefault(); location.href=\'/api/boards/' + ${board.boardId} + '/edit\''">-->
                             <!--                                <span class="material-symbols-outlined"> edit </span>-->
                             <!--                            </button>-->
-                            <button class="btn btn-outline-primary lh-1" th:onclick="'event.preventDefault(); location.href=\'/v2/boards/' + ${board.board_id} + '/edit\''">
+                            <button class="btn btn-outline-primary lh-1" th:onclick="'event.preventDefault(); location.href=\'/v2/boards/' + ${board.boardId} + '/edit\''">
                                 <span class="material-symbols-outlined"> edit </span>
                             </button>
                             <button
                                     class="btn btn-outline-danger lh-1"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteModal"
-                                    th:onclick="handleDeleteButton(event, [[${board.board_id}]]);"
+                                    th:onclick="handleDeleteButton(event, [[${board.boardId}]]);"
                             >
                                 <span class="material-symbols-outlined"> delete </span>
                             </button>
@@ -189,7 +189,6 @@
         axios.delete('/api/v2/boards/' + boardId)
             .then(function(response) {
                 console.log(response);
-                alert("삭제 되었습니다!");
                 window.location.href = "/api/boards"
             })
             .catch(function(error) {

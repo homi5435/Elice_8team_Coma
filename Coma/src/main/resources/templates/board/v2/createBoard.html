@@ -29,23 +29,23 @@
     </div>
     <form>
         <div class="mb-3">
-            <label for="board_title">게시판 이름</label>
+            <label for="boardTitle">게시판 이름</label>
             <input
                     type="text"
                     class="form-control"
-                    id="board_title"
-                    name="board_title"
+                    id="boardTitle"
+                    name="boardTitle"
                     maxlength="20"
                     placeholder="게시판 이름 입력 (최대 20자)"
                     required
             />
         </div>
         <div class="mb-3">
-            <label for="board_description">게시판 설명</label>
+            <label for="boardDescription">게시판 설명</label>
             <textarea
                     class="form-control"
-                    id="board_description"
-                    name="board_description"
+                    id="boardDescription"
+                    name="boardDescription"
                     maxlength="200"
                     placeholder="게시판 설명 입력 (최대 200자)"
             ></textarea>
@@ -92,13 +92,13 @@
 <script th:inline="javascript">
     const createPost=(event)=>{
         event.preventDefault();
-        const board_title = document.querySelector('#board_title').value;
-        const board_description = document.querySelector('#board_description').value;
+        const boardTitle = document.querySelector('#boardTitle').value;
+        const boardDescription = document.querySelector('#boardDescription').value;
         const userId = document.querySelector('#userId').value;
 
         const send_param = {
-            board_title,
-            board_description,
+            boardTitle,
+            boardDescription,
             userId
         }
 

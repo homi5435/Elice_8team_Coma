@@ -27,15 +27,15 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
     private RowMapper<Board> boardRowMapper() {
         return (rs, rowNum) -> {
             Board board = new Board();
-            board.setBoard_id(rs.getLong("board_id"));
-            board.setUser_id(rs.getLong("user_id"));
-            board.setBoard_title(rs.getString("board_title"));
-            board.setBoard_description(rs.getString("board_description"));
-            board.setIs_delete(rs.getString("is_delete"));
-            board.setCreated_date(rs.getTimestamp("created_date").toLocalDateTime());
-            board.setModified_date(rs.getTimestamp("modified_date")!= null
+            board.setBoardId(rs.getLong("board_id"));
+            board.setUserId(rs.getLong("user_id"));
+            board.setBoardTitle(rs.getString("board_title"));
+            board.setBoardDescription(rs.getString("board_description"));
+            board.setIsDelete(rs.getString("is_delete"));
+            board.setCreatedDate(rs.getTimestamp("created_date").toLocalDateTime());
+            board.setModifiedDate(rs.getTimestamp("modified_date")!= null
                     ? rs.getTimestamp("modified_date").toLocalDateTime()
-                    : null)
+                    : null);
             ;
             return board;
         };
@@ -63,7 +63,7 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
     @Override
     public void upsert(Board board) {
 
-        if (board.getBoard_id() == null) {
+        if (board.getBoardId() == null) {
             // Insert new contact and retrieve generated contactId
             KeyHolder keyHolder = new GeneratedKeyHolder();
             // TODO insert시 생성일 컬럼값 추가
@@ -73,10 +73,10 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
                                 "INSERT INTO board (board_title, board_description, created_date, user_id) VALUES (?, ?, ?, ?)",
                                 Statement.RETURN_GENERATED_KEYS
                         );
-                        ps.setString(1, board.getBoard_title());
-                        ps.setString(2, board.getBoard_description());
+                        ps.setString(1, board.getBoardTitle());
+                        ps.setString(2, board.getBoardDescription());
                         ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-                        ps.setLong(4, board.getUser_id());
+                        ps.setLong(4, board.getUserId());
                         return ps;
                     },
                     keyHolder
@@ -84,7 +84,7 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
             // Set the generated contactId to the contact object
             Number key = keyHolder.getKey();
             if (key != null) {
-                board.setBoard_id(key.longValue());
+                board.setBoardId(key.longValue());
             } else {
                 // Handle the scenario where key generation failed
                 throw new RuntimeException("Failed to generate boardId for new board");
@@ -93,7 +93,7 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
             // Update existing contact
             jdbcTemplate.update(
                     "UPDATE board SET board_title = ?, board_description = ?, modified_date = ?  WHERE board_id = ?",
-                    board.getBoard_title(), board.getBoard_description(), Timestamp.valueOf(LocalDateTime.now()), board.getBoard_id()
+                    board.getBoardTitle(), board.getBoardDescription(), Timestamp.valueOf(LocalDateTime.now()), board.getBoardId()
             );
         }
     }
@@ -102,7 +102,7 @@ public class BoardJdbcTemplateRepository  implements BoardRepository {
     public void delete(Board board) {
         jdbcTemplate.update(
                 "UPDATE board SET is_delete = 'Y' WHERE board_id = ?",
-                board.getBoard_id()
+                board.getBoardId()
         );
     }
 }

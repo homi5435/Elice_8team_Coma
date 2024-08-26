@@ -23,7 +23,7 @@
           font-family: "Elice DX Neolli", sans-serif;
       }
   </style>
-  <title th:text="${board.board_title}"></title>
+  <title th:text="${board.boardTitle}"></title>
 </head>
 <body>
 <!-- 공통 헤더 포함 -->
@@ -37,10 +37,10 @@
   >&larr; 게시판 목록으로 돌아가기</a
   >
   <div class="header mb-5">
-    <h1 class="text-center" th:text="${board.board_title}">게시판 제목</h1>
+    <h1 class="text-center" th:text="${board.boardTitle}">게시판 제목</h1>
     <p
         class="text-center text-secondary"
-        th:text="${board.board_description}"
+        th:text="${board.boardDescription}"
     ></p>
   </div>
   <div class="d-flex w-100 justify-content-between mb-3">
@@ -58,7 +58,7 @@
       </div>
     </form>
     <a th:if="${isAuthenticated}"
-        th:href="@{/page/posts/new/{boardId}(boardId=${board.board_id})}"
+        th:href="@{/page/posts/new/{boardId}(boardId=${board.boardId})}"
         class="btn btn-primary"
     >게시글 추가</a
     >
@@ -84,7 +84,7 @@
       <!-- Previous Page Link -->
       <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
         <a class="page-link"
-           th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${currentPage - 1}, size=${posts.size}, keyword=${keyword})}"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId}, page=${currentPage - 1}, size=${posts.size}, keyword=${keyword})}"
            th:text="'&laquo; 이전'"/>
       </li>
 
@@ -93,14 +93,14 @@
           class="page-item"
           th:classappend="${i == currentPage ? 'active' : ''}">
         <a class="page-link"
-           th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${i}, size=${posts.size}, keyword=${keyword})}"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId}, page=${i}, size=${posts.size}, keyword=${keyword})}"
            th:text="${i}"/>
       </li>
 
       <!-- Next Page Link -->
       <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
         <a class="page-link"
-           th:href="@{/page/posts/list/{boardId}(boardId=${board.board_id}, page=${currentPage + 1}, size=${posts.size}, keyword=${keyword})}"
+           th:href="@{/page/posts/list/{boardId}(boardId=${board.boardId}, page=${currentPage + 1}, size=${posts.size}, keyword=${keyword})}"
            th:text="'다음 &raquo;'"/>
       </li>
     </ul>
