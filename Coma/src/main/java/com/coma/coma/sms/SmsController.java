@@ -1,6 +1,7 @@
 package com.coma.coma.sms;
 
 import com.coma.coma.users.service.UserService;
+import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;

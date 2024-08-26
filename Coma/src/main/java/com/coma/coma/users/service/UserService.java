@@ -21,13 +21,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private SmsController smsController;
-
-    @Autowired
-    public void setSmsController(@Lazy SmsController smsController) {
-        this.smsController = smsController;
-    }
-
 
     public UserResponseDto getUserByUserId(int user_id) {
         return userRepository.getUserByUserId(user_id);
@@ -93,10 +86,6 @@ public class UserService {
 
     public boolean checkDuplicateId(String id) {
         return userRepository.existsById(id);
-    }
-
-    public void sendVerificationCode(String phoneNumber) {
-        smsController.sendOne(Map.of("phoneNumber", phoneNumber));
     }
 
     // 사용자 존재 여부 확인 메서드(비밀번호 찾기)
