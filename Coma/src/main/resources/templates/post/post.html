@@ -105,12 +105,12 @@
           <p class="mb-2" th:text="${comment.content}">댓글 내용</p>
           <small class="text-secondary" th:text="${comment.createdDate}">생성 일자</small>
 
-          <div
+          <div th:if="${loggedInUserId != null && (loggedInUserId == comment.userId || loggedInUserGroupId == 1)}"
               class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
               role="group"
               aria-label="edit-delete"
           >
-            <button
+            <button th:if="${loggedInUserId != null and loggedInUserId == comment.userId}"
                 class="btn btn-outline-primary lh-1"
                 data-bs-toggle="modal"
                 data-bs-target="#editCommentModal"
@@ -118,7 +118,7 @@
             >
               <span class="material-symbols-outlined"> edit </span>
             </button>
-            <button
+            <button th:if="${loggedInUserId != null and (loggedInUserId == comment.userId || loggedInUserGroupId == 1)}"
                 class="btn btn-outline-danger lh-1"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteCommentModal"
