@@ -35,16 +35,31 @@ public class PostController {
         this.userService = userService;
     }
 
+    // Authentication 통합해서 처리
+    @ModelAttribute
+    public void addUserInfoAttributes(@Nullable @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+        boolean isAuthenticated = customUserDetails != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);     // 로그인 여부 확인
+
+        // 로그인이 된 경우
+        if(isAuthenticated) {
+            model.addAttribute("userId", customUserDetails.getUserId());
+            // 관리자 계정 확인
+            model.addAttribute("isAdmin", customUserDetails.getGroupId() == 1);
+        } else {
+            // 비로그인 사용자는 관리자 계정이 아님
+            model.addAttribute("isAdmin", false);
+        }
+    }
+
     // 게시물 목록 페이지 - 페이지네이션 적용
     @GetMapping("/list/{boardId}")
     public String getPosts(@PathVariable("boardId") Long boardId,
                            @RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "10") int size,
                            @RequestParam(value = "keyword", required = false) String keyword,
-                           @Nullable @AuthenticationPrincipal CustomUserDetails customUserDetails,      // 로그인된 user 정보 가져오기
                            Model model) {
         Page<PostResponseDto> posts;
-        boolean isAuthenticated = customUserDetails != null;
 
         if (keyword != null && !keyword.isEmpty()) {
             posts = postService.findByKeywordWithPagination(boardId, keyword, page, size);
@@ -55,25 +70,18 @@ public class PostController {
         model.addAttribute("posts", posts);
         model.addAttribute("board", board);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("isAuthenticated", isAuthenticated);
         return "board/board";
     }
 
     // 게시글 상세 페이지
     @GetMapping("/{postId}")
-    public String getPost(@PathVariable("postId") Integer postId, Model model,
-                          @Nullable @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public String getPost(@PathVariable("postId") Integer postId, Model model) {
         PostResponseDto postResponseDto = postService.findPost(postId);
         // 글 작성자의 정보를 받아와 저장
         UserResponseDto authorInfo = userService.getUserByUserId(postResponseDto.getUserId());
 
-        boolean isAuthor = false;   // 로그인 한 유저와 글 작성자가 일치하는지 확인
-        boolean isAdmin = false;    // 관리자 계정인지 확인
-
-        if(customUserDetails != null) {
-            isAuthor = customUserDetails.getUserId() == authorInfo.getUserId();
-            isAdmin = customUserDetails.getGroupId() == 1;  // group id가 1인 경우 -> 관리자인 경우 글 삭제 가능하도록
-        }
+        Integer loggedInUserId = (Integer) model.getAttribute("userId");
+        boolean isAuthor = loggedInUserId != null && loggedInUserId.equals(authorInfo.getUserId());
 
         List<Comment> comments = commentService.getCommentsByPostId(postId);
 
@@ -82,7 +90,6 @@ public class PostController {
         model.addAttribute("comments", comments);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("authorInfo", authorInfo);       // 글 작성자 정보 전달
-        model.addAttribute("isAdmin", isAdmin);             // 관리자 계정 확인
         return "post/post";
     }
 
