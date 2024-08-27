@@ -9,6 +9,8 @@ public class PostSecurityService {
 
     private final PostRepository postRepository;
 
+    private final Integer ADMIN_GROUP_ID = 1;
+
     public PostSecurityService(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
@@ -19,6 +21,11 @@ public class PostSecurityService {
                 .orElseThrow(() -> new RuntimeException("Post Not Found"));
 
         return post.getUserId().equals(userId);
+    }
+
+    // 관리자인지 확인
+    public boolean isAdmin(Integer groupId) {
+        return groupId.equals(ADMIN_GROUP_ID);
     }
 }
 
