@@ -91,7 +91,11 @@ public class PostController {
 
     // 게시글 상세 페이지
     @GetMapping("/{postId}")
-    public String getPost(@PathVariable("postId") Integer postId, Model model) {
+    public String getPost(@PathVariable("postId") Integer postId,
+                          @RequestParam(defaultValue = "1") int page,
+                          @RequestParam(defaultValue = "10") int size,
+                          Model model) {
+
         PostResponseDto postResponseDto = postService.findPost(postId);
         // 글 작성자의 정보를 받아와 저장
         UserResponseDto authorInfo = userService.getUserByUserId(postResponseDto.getUserId());
@@ -101,8 +105,15 @@ public class PostController {
         boolean isAuthor = loggedInUserId != null && loggedInUserId.equals(authorInfo.getUserId());
 
 
-        List<Comment> comments = commentService.getCommentsByPostId(postId);
+        //List<Comment> comments = commentService.getCommentsByPostId(postId);
+        Page<Comment> comments;
+        Pageable pageable = PageRequest.of(page - 1, size);
+        comments = commentService.getCommentsPageByPostId(postId, pageable);
 
+        int totalPages = comments.getTotalPages();
+        int currentPage = comments.getNumber() + 1;
+        int startPage = Math.max(1, (currentPage - 1) / 10 * 10 + 1);
+        int endPage = Math.min(totalPages, startPage + 9);
 
         model.addAttribute("post", postResponseDto);
         model.addAttribute("comments", comments);
@@ -110,6 +121,10 @@ public class PostController {
         model.addAttribute("authorInfo", authorInfo);       // 글 작성자 정보 전달
         model.addAttribute("loggedInUserId", loggedInUserId); // 현재 로그인 한 유저 User_Id 전달
         model.addAttribute("loggedInUserGroupId",loggedInUserGroupId);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", currentPage);
         return "post/post";
     }
 

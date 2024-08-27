@@ -87,13 +87,30 @@
       <small
           class="text-secondary"
           id="commentsCount"
-          th:text="${comments.size()}"
+          th:text="${comments.getTotalElements()}"
       >0</small
       >
     </h4>
+
+    <form
+            class="mt-3 row"
+            th:action="@{/comments(postId=${post.postId})}"
+            method="POST"
+    >
+      <div class="input-group">
+            <textarea
+                    class="form-control"
+                    name="content"
+                    cols="6"
+                    placeholder="댓글 작성하기"
+            ></textarea>
+        <button class="btn btn-primary">업로드</button>
+      </div>
+    </form>
+    <hr class="mt-4" />
     <div
         class="container p-0 d-flex flex-column align-items-start gap-2"
-        th:unless="${#lists.isEmpty(comments)}"
+        th:unless="${comments.getTotalElements() == 0}"
     >
       <div
           class="card comment"
@@ -130,27 +147,37 @@
         </div>
       </div>
     </div>
-    <span
-        th:if="${#lists.isEmpty(comments)}"
+    <h3
+        th:if="${comments.getTotalElements() == 0}"
         class="d-block w-100 text-center"
-    >댓글이 없습니다.</span
-    >
+    >댓글이 없습니다.</h3>
 
-    <form
-        class="mt-3 row"
-        th:action="@{/comments(postId=${post.postId})}"
-        method="POST"
-    >
-      <div class="input-group">
-            <textarea
-                class="form-control"
-                name="content"
-                cols="6"
-                placeholder="댓글 작성하기"
-            ></textarea>
-        <button class="btn btn-primary">업로드</button>
-      </div>
-    </form>
+    <div class="w-100 d-flex justify-content-center">
+      <ul class="pagination">
+        <!-- Previous Page Link -->
+        <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+          <a class="page-link"
+             th:href="@{/page/posts/{postId}(postId=${post.postId}, page=${currentPage - 1}, size=${comments.size})}"
+             th:text="'&laquo; 이전'"/>
+        </li>
+
+        <!-- Page Number Links -->
+        <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+            class="page-item"
+            th:classappend="${i == currentPage ? 'active' : ''}">
+          <a class="page-link"
+             th:href="@{/page/posts/{postId}(postId=${post.postId}, page=${i}, size=${comments.size})}"
+             th:text="${i}"/>
+        </li>
+
+        <!-- Next Page Link -->
+        <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+          <a class="page-link"
+             th:href="@{/page/posts/{postId}(postId=${post.postId}, page=${currentPage + 1}, size=${comments.size})}"
+             th:text="'다음 &raquo;'"/>
+        </li>
+      </ul>
+    </div>
 
     <div class="position-absolute top-0 end-0 mt-4 me-4" th:if="${isAuthor || isAdmin}">
       <button
