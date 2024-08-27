@@ -91,4 +91,11 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "DELETE FROM Users WHERE id = ?";
         jdbcTemplate.update(sql, user.getId());
     }
+
+    @Override
+    public boolean existsByIdAndPhoneNumber(String id, String phoneNumber) {
+        String sql = "SELECT COUNT(*) FROM Users WHERE id = ? AND phone_number = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{id, phoneNumber}, Integer.class);
+        return count != null && count > 0;
+    }
 }
