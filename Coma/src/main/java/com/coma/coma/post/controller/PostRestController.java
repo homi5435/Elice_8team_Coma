@@ -64,7 +64,7 @@ public class PostRestController {
     }
 
     // 게시물 삭제
-    @PreAuthorize("postSecurityService.isPostOwner(#postId, #customUserDetails.userId) or #customUserDetails.groupId == 1")
+    @PreAuthorize("postSecurityService.isPostOwner(#postId, #customUserDetails.userId) or postSecurityService.isAdmin(#customUserDetails.groupId)")
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable("postId") Integer postId,
                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
