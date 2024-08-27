@@ -84,6 +84,12 @@ async function verifyCode() {
         alert("인증이 완료되었습니다.");
         isVerified = true;
         document.getElementById('resetPasswordSection').style.display = 'block';
+        const verifyCodeConfirm = document.getElementById('verifyCodeConfirm');
+        verifyCodeConfirm.disabled = true;
+        verifyCodeConfirm.style.backgroundColor = 'gray';
+        verifyCodeConfirm.style.cursor = 'not-allowed';
+
+        document.getElementById('newPasswordSubmit').innerText = '비밀번호 재설정';
 
     } else {
         alert("인증에 실패했습니다. 인증번호를 다시 확인해주세요.");
