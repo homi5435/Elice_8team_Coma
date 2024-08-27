@@ -80,6 +80,9 @@
 
     <!-- Divider -->
     <hr style="border-color: rgba(13, 110, 253, 1)">
+    <div th:if="${post.imageUrl} != null">
+      <img th:src="${post.imageUrl}" alt="이미지" style="max-width: 50%; height: auto;">
+    </div>
     <pre class="m-0" th:text="${post.content}">게시글 내용</pre>
     <hr class="mt-4" />
     <h4 class="mb-3">

@@ -1,5 +1,6 @@
 package com.coma.coma.post.controller;
 
+import com.coma.coma.common.controller.ImageRestController;
 import com.coma.coma.post.dto.PostResponseDto;
 import com.coma.coma.post.entity.Post;
 import com.coma.coma.post.dto.PostRequestDto;
@@ -22,11 +23,13 @@ public class PostRestController {
     private final PostService postService;
     private final PostMapper postMapper;
     private final PostSecurityService postSecurityService;
+    private final ImageRestController imageRestController;
 
-    public PostRestController(PostService postService, PostMapper postMapper, PostSecurityService postSecurityService) {
+    public PostRestController(PostService postService, PostMapper postMapper, PostSecurityService postSecurityService, ImageRestController imageRestController) {
         this.postService = postService;
         this.postMapper = postMapper;
         this.postSecurityService = postSecurityService;
+        this.imageRestController = imageRestController;
     }
 
     // 게시물 생성
@@ -39,7 +42,10 @@ public class PostRestController {
             // 로그인이 안되었을 경우 401 Unauthorized 반환
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        System.out.println("PostRequestDto 객체에 들어있는 Image URL:" + postRequestDto.getImageUrl());
         Post post = postMapper.toEntity(postRequestDto);
+        System.out.println("Post 객체에 들어 있는 image URL: " + post.getImageUrl());
+
         // 현재 로그인한 유저의 id를 Post 객체에 설정
         post.setUserId(customUserDetails.getUserId());
         // 현재 로그인한 유저의 group id를 Post 객체에 설정
@@ -69,7 +75,21 @@ public class PostRestController {
     public ResponseEntity<Void> deletePost(@PathVariable("postId") Integer postId,
                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
+        // 게시물 조회
+        PostResponseDto postResponseDto = postService.findPost(postId);
+
+        if (postResponseDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // 게시물의 이미지 URL 가져오기
+        String imageUrl = postResponseDto.getImageUrl();
+
         postService.deletePost(postId);
+
+        if(imageUrl != null && !imageUrl.isEmpty()) {
+            imageRestController.deleteImage(imageUrl, customUserDetails);
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

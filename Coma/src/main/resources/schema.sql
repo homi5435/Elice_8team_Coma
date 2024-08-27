@@ -43,6 +43,7 @@ CREATE TABLE post (
                       board_id BIGINT NOT NULL,
                       title VARCHAR(255) NOT NULL,
                       content TEXT NOT NULL,
+                      image_url VARCHAR(255),
                       is_delete CHAR(1) DEFAULT 'N' NOT NULL,
                       created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                       modified_date TIMESTAMP NULL,

@@ -33,6 +33,8 @@
   >
     <input type="hidden" id="boardId" th:value="${post.boardId}" />
     <input type="hidden" id="postId" th:value="${post.postId}" />
+    <input type="hidden" id="currentImageUrl" th:value="${post.imageUrl}" />
+    <input type="hidden" id="imageRemoved" value="false" />
     <div class="mb-3">
       <label for="title">게시글 제목</label>
       <input
@@ -57,6 +59,23 @@
           th:text="${post.content}"
       ></textarea>
     </div>
+    <!-- 이미지 파일 추가 -->
+    <div class="mb-3">
+      <div class="image-preview" id="imagePreview" th:if="${post.imageUrl} != null">
+        <label>현재 이미지: </label>
+        <span th:text="${filename}" id="filename">이미지 이름</span>
+        <button type="button" class="remove-button" onclick="removeImage()">×</button>
+      </div>
+      <label for="image" class="mt-2">이미지 파일</label>
+      <input
+          type="file"
+          class="form-control"
+          id="image"
+          name="image"
+          accept="image/*"
+          onchange="handleFileSelect(event)"
+      />
+    </div>
     <button type="submit" class="btn btn-primary">수정</button>
     <button
         type="button"
@@ -76,42 +95,94 @@
 ></script>
 
 <script>
+
+    function removeImage() {
+        // 이미지 미리보기 숨기기 및 텍스트 지우기
+        document.querySelector('#imagePreview').style.display = 'none';
+        document.querySelector('#imagePreview span').textContent = '';
+        // 이미지 제거됨표시
+        document.getElementById('imageRemoved').value = 'true';
+        document.getElementById('image').value = '';    // 이미지 입력 필드 초기화
+    }
+
+
     function updatePost(event) {
         event.preventDefault();
 
 
         const postId = document.getElementById('postId').value;
+        const currentImageUrl = document.getElementById('currentImageUrl').value;
+        const imageRemoved = document.getElementById('imageRemoved').value;
+        const imageFile = document.getElementById('image').files[0];
 
-        // Get form data
         const form = document.getElementById('updateForm');
         const formData = new FormData(form);
 
-        fetch(`/api/posts/${postId}`, {
+        console.log(imageRemoved);
+
+        const postData = {
+            title: formData.get('title'),
+            content: formData.get('content'),
+            imageUrl: imageRemoved === 'true' ? null : currentImageUrl
+        };
+
+        // 이미지 파일이 있는 경우
+        if (imageFile) {
+            // 새 이미지 업로드
+            uploadImage(imageFile)
+                .then(imageUrl => {
+                    formData.append('imageUrl', imageUrl);
+                    return updatePostRequest(postId, formData);
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            // 이미지 파일이 없는 경우
+            updatePostRequest(postId, formData);
+        }
+
+        return false;
+    }
+
+    function uploadImage(file) {
+        const imageFormData = new FormData();
+        imageFormData.append('file', file);
+
+        return fetch('/api/images', {
+            method: 'POST',
+            body: imageFormData
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Uploaded image URL:", data);
+                return data;
+            })
+            .catch(error => {
+                console.error('이미지 업로드 실패:', error);
+                throw error;
+            });
+    }
+
+    function updatePostRequest(postId, formData) {
+        return fetch(`/api/posts/${postId}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                title: formData.get('title'),
-                content: formData.get('content')
-            })
+            body: JSON.stringify(Object.fromEntries(formData))
         })
             .then(response => {
                 if (response.ok) {
                     return response.json();
                 }
-                throw new Error('수정 요청이 실패하였습니다.');
+                throw new Error('게시글 수정 실패');
             })
-            .then(data => {
-                // 업데이트된 페이지로 이동
+            .then(() => {
                 window.location.href = `/page/posts/${postId}`;
             })
             .catch(error => {
-                console.error('네트워크 오류: ', error);
+                console.error('Error:', error);
             });
-
-        return false;
     }
 </script>
 </body>

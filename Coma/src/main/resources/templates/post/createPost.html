@@ -48,7 +48,19 @@
           name="content"
           placeholder="내용 입력"
           style="height: 600px"
+          required
       ></textarea>
+    </div>
+    <!-- 이미지 파일 추가 -->
+    <div class="mb-3">
+      <label for="image">이미지 파일 업로드</label>
+      <input
+          type="file"
+          class="form-control"
+          id="image"
+          name="image"
+          accept="image/*"
+      />
     </div>
     <button type="submit" class="btn btn-primary">업로드</button>
     <button
@@ -74,28 +86,57 @@
         const boardId = document.getElementById('boardId').value;
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
+        const imageFile = document.getElementById('image').files[0];
+
+        // 이미지 파일이 선택된 경우
+        if (imageFile) {
+            // 이미지 파일을 업로드
+            const formData = new FormData();
+            formData.append('file', imageFile);
+
+            fetch('/api/images', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("Uploaded image Url:", data);
+                    // 업로드가 성공하면, 받은 URL로 게시글을 작성
+                    createPost(boardId, title, content, data);
+                })
+                .catch(error => {
+                    console.error('이미지 업로드 실패:', error);
+                });
+        } else {
+            // 이미지 파일이 없는 경우, 게시글만 작성
+            createPost(boardId, title, content);
+        }
+    });
+
+    function createPost(boardId, title, content, imageUrl = null) {
+        const postRequest = { title, content };
+        if (imageUrl) {
+            postRequest.imageUrl = imageUrl;
+        }
 
         fetch(`/api/posts/${boardId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title, content })
+            body: JSON.stringify(postRequest)
         })
             .then(response => {
                 if (response.ok) {
-                    // 성공적으로 게시글이 생성되면 게시물 목록 페이지로 리다이렉트
                     window.location.href = `/page/posts/list/${boardId}`;
                 } else {
-                    // 오류 처리
                     console.error('게시글 작성에 실패했습니다.');
                 }
             })
             .catch(error => {
-                // 네트워크 오류 처리
                 console.error('Error:', error);
             });
-    });
+    }
 </script>
 </body>
 </html>
