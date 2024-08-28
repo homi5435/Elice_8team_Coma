@@ -18,6 +18,17 @@
       body {
           font-family: "Elice DX Neolli", sans-serif;
       }
+      /* 스피너 위치 중앙 정렬 */
+      .spinner-container {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1050; /* 부트스트랩의 모달보다 높은 z-index */
+      }
+      .spinner-hidden {
+          display: none;
+      }
   </style>
   <title>게시글 수정</title>
 </head>
@@ -87,6 +98,13 @@
   </form>
 </div>
 
+<!-- 부트스트랩 스피너 -->
+<div id="spinner" class="spinner-container spinner-hidden">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
 <!-- 부트스트랩 JS 추가 -->
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -115,6 +133,9 @@
         const imageRemoved = document.getElementById('imageRemoved').value;
         const imageFile = document.getElementById('image').files[0];
 
+        document.getElementById('spinner').classList.remove('spinner-hidden');
+
+
         const form = document.getElementById('updateForm');
         const formData = new FormData(form);
 
@@ -135,6 +156,7 @@
                     return updatePostRequest(postId, formData);
                 })
                 .catch(error => console.error('Error:', error));
+
         } else {
             // 이미지 파일이 없는 경우
             updatePostRequest(postId, formData);
@@ -153,11 +175,13 @@
         })
             .then(response => response.text())
             .then(data => {
-                console.log("Uploaded image URL:", data);
                 return data;
+                document.getElementById('spinner').classList.add('spinner-hidden');
             })
             .catch(error => {
                 console.error('이미지 업로드 실패:', error);
+                document.getElementById('spinner').classList.add('spinner-hidden');
+
                 throw error;
             });
     }
@@ -182,6 +206,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+                document.getElementById('spinner').classList.add('spinner-hidden');
             });
     }
 </script>
