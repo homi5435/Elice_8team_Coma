@@ -39,6 +39,7 @@ public class PostRepository {
             post.setBoardId(rs.getLong("board_id"));
             post.setTitle(rs.getString("title"));
             post.setContent(rs.getString("content"));
+            post.setImageUrl(rs.getString("image_url"));
             post.setIsDelete(rs.getString("is_delete"));
             post.setCreatedDate(rs.getTimestamp("created_date").toLocalDateTime());
             post.setModifiedDate(rs.getTimestamp("modified_date") != null
@@ -50,8 +51,8 @@ public class PostRepository {
 
     // CREATE
     public Post create(Post post) {
-        String insertSql = "INSERT INTO post (user_id, group_id, board_id, title, content, is_delete, created_date) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO post (user_id, group_id, board_id, title, content, image_url, is_delete, created_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -61,8 +62,9 @@ public class PostRepository {
             ps.setLong(3, post.getBoardId());        // boardId
             ps.setString(4, post.getTitle());        // title
             ps.setString(5, post.getContent());      // content
-            ps.setString(6, post.getIsDelete());     // 삭제 여부
-            ps.setTimestamp(7, java.sql.Timestamp.valueOf(post.getCreatedDate())); // 생성 시간
+            ps.setString(6, post.getImageUrl());
+            ps.setString(7, post.getIsDelete());     // 삭제 여부
+            ps.setTimestamp(8, java.sql.Timestamp.valueOf(post.getCreatedDate())); // 생성 시간
             return ps;
         }, keyHolder);
 
@@ -81,7 +83,7 @@ public class PostRepository {
             throw new EmptyResultDataAccessException("삭제된 게시글입니다.", 1);
         }
 
-        String updateSql = "UPDATE post SET title = ?, content = ?, modified_date = ? " +
+        String updateSql = "UPDATE post SET title = ?, content = ?, image_url = ?, modified_date = ? " +
                 "WHERE post_id = ? AND user_id = ?";  // 게시글 작성자 확인 기능
         post.updateModifiedDate();
 
@@ -89,6 +91,7 @@ public class PostRepository {
         jdbcTemplate.update(updateSql,
                 post.getTitle(),
                 post.getContent(),
+                post.getImageUrl(),
                 java.sql.Timestamp.valueOf(post.getModifiedDate()),
                 post.getPostId(),
                 post.getUserId()); // user_id로 게시글 작성자 확인

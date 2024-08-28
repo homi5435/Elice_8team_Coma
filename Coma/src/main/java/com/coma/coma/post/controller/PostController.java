@@ -140,6 +140,13 @@ public class PostController {
     @GetMapping("/edit/{postId}")
     public String editPostPage(@PathVariable("postId") Integer postId, Model model) {
         PostResponseDto post = postService.findPost(postId);
+        // 글에 이미지 파일이 있는 경우
+        if(post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
+            String[] tokens= post.getImageUrl().split("/");
+            String fileName = tokens[tokens.length - 1];
+            model.addAttribute("filename", fileName);
+            System.out.println(fileName);
+        }
         model.addAttribute("post", post);
         return "post/editPost";
     }

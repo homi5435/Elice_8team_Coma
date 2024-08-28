@@ -21,6 +21,7 @@ public class Post {
     private Long boardId;
     private String title;
     private String content;
+    private String imageUrl;
     private String isDelete = "N";      // default value is "N"
 
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -33,6 +34,7 @@ public class Post {
     public void update(PostRequestDto postRequestDto) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.imageUrl = postRequestDto.getImageUrl();
     }
 
 }
