@@ -61,10 +61,10 @@ public class CommentRepository {
     //특정 게시물의 댓글 조회(pagination 적용)
     public Page<Comment> getCommentsPageByPostId(int postId, Pageable pageable) {
         int limit = pageable.getPageSize();
-        long offset = pageable.getOffset();
+        int offset = (int) pageable.getOffset();
         int total = countCommentInPost(postId);
 
-        String sql = "SELECT * FROM Comment WHERE post_id = ? AND is_delete = 'N'"
+        String sql = "SELECT * FROM Comment WHERE post_id = ? AND is_delete = 'N' "
                 + "ORDER BY created_date ASC LIMIT ? OFFSET ?";
 
         List<Comment> comments = jdbcTemplate.query(sql, commentRowMapper(), postId, limit, offset);
@@ -73,7 +73,7 @@ public class CommentRepository {
 
     //게시물에 존재하는 총 데이터 갯수 조회
     public int countCommentInPost(int postId){
-        String sql = "SELECT count(*) FROM comment WHERE post_id = ? AND is_delete = 'N'";
+        String sql = "SELECT count(*) FROM Comment WHERE post_id = ? AND is_delete = 'N'";
         return jdbcTemplate.queryForObject(sql, Integer.class, postId);
     }
 
