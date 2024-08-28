@@ -1,6 +1,7 @@
 
 <!doctype html>
 <html lang="ko" class="h-100">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -59,7 +60,9 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="mb-auto">
     <div>
-      <h3 class="float-md-start mb-0">COMA</h3>
+      <a href="/" class="float-md-start mb-0 text-white text-decoration-none">
+        <h3>COMA</h3>
+      </a>
     </div>
   </header>
 
@@ -67,8 +70,12 @@
     <h1>COMA</h1>
     <p class="lead">개발자를 위한 자유로운 커뮤니티</p>
     <p class="lead">
-      <a href="/users/login" class="btn btn-md btn-secondary fw-bold border-white ">로그인</a>
-      <a href="/api/boards" class="text-white fs-6 ms-4 no-underline">계정 없이 시작하기 <span aria-hidden="true">→</span></a>
+
+      <a th:if="${#authentication.name == 'anonymousUser'}" th:href="@{/users/login}" class="btn btn-md btn-secondary fw-bold border-white">로그인</a>
+      <a th:if="${#authentication.name != 'anonymousUser'}" href="#" onclick="performLogout()" class="btn btn-md btn-secondary fw-bold border-white">로그아웃</a>
+
+      <a th:if="${#authentication.name == 'anonymousUser'}" href="/api/boards" class="text-white fs-6 ms-4 no-underline">계정 없이 시작하기 <span aria-hidden="true">→</span></a>
+      <a th:if="${#authentication.name !=  'anonymousUser'}" href="/api/boards" class="text-white fs-6 ms-4 no-underline">게시판 목록으로 이동하기 <span aria-hidden="true">→</span></a>
     </p>
   </main>
 
@@ -76,7 +83,27 @@
     <p>Cover template for <a href="https://getbootstrap.com/" class="text-white">Bootstrap</a>, by <a href="https://twitter.com/mdo" class="text-white">@mdo</a>.</p>
   </footer>
 </div>
-
+<script>
+  function performLogout() {
+    fetch('/api/users/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => {
+              if (response.ok) {
+                console.log("window.location.origin : ", window.location.origin);
+                console.log("window.location.pathname : ", window.location.pathname);
+                // 현재 페이지를 새로고침하여 로그아웃 상태 반영
+                window.location.replace(window.location.origin + window.location.pathname);
+              } else {
+                alert('로그아웃에 실패했습니다.');
+              }
+            })
+            .catch(error => console.error('Error:', error));
+  }
+</script>
 
 
 </body>

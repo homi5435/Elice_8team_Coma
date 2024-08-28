@@ -122,6 +122,18 @@ public class UserController {
         return "redirect:/api/boards";
     }
 
+    @GetMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable("id") String id, HttpServletResponse response) {
+        // 쿠키 삭제
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 쿠키 즉시 만료
+        response.addCookie(cookie);
+
+        return "redirect:/api/boards";
+    }
+
     @GetMapping("/users/login/findPassword")
     public String findPasswordPage() {
         return "user/findPassword";
