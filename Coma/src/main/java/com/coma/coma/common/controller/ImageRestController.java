@@ -27,7 +27,6 @@ public class ImageRestController {
         String imageUrl;
         try {
             imageUrl = storageService.uploadFile(file, customUserDetails.getUsername());
-            System.out.println("Uploaded Image URL: " + imageUrl); // 업로드된 이미지 URL 확인
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Image upload failed");
         }

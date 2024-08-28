@@ -42,9 +42,7 @@ public class PostRestController {
             // 로그인이 안되었을 경우 401 Unauthorized 반환
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        System.out.println("PostRequestDto 객체에 들어있는 Image URL:" + postRequestDto.getImageUrl());
         Post post = postMapper.toEntity(postRequestDto);
-        System.out.println("Post 객체에 들어 있는 image URL: " + post.getImageUrl());
 
         // 현재 로그인한 유저의 id를 Post 객체에 설정
         post.setUserId(customUserDetails.getUserId());
