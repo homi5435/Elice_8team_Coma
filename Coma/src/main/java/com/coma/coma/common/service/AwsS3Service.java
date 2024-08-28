@@ -30,8 +30,7 @@ public class AwsS3Service implements StorageService{
 
     private String generateFileName(String username, String originalFileName) {
         LocalDateTime now = LocalDateTime.now();
-        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        return username + "_" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + extension;
+        return username + "_" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_" + originalFileName;
 
     }
 
