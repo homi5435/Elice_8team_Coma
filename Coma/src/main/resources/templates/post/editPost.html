@@ -39,7 +39,7 @@
   </div>
   <form
       id="updateForm"
-      method="post"
+      method="put"
       onsubmit="return updatePost(event);"
   >
     <input type="hidden" id="boardId" th:value="${post.boardId}" />
@@ -127,7 +127,6 @@
     function updatePost(event) {
         event.preventDefault();
 
-
         const postId = document.getElementById('postId').value;
         const currentImageUrl = document.getElementById('currentImageUrl').value;
         const imageRemoved = document.getElementById('imageRemoved').value;
@@ -135,31 +134,32 @@
 
         document.getElementById('spinner').classList.remove('spinner-hidden');
 
-
-        const form = document.getElementById('updateForm');
-        const formData = new FormData(form);
-
-        console.log(imageRemoved);
-
         const postData = {
-            title: formData.get('title'),
-            content: formData.get('content'),
-            imageUrl: imageRemoved === 'true' ? null : currentImageUrl
+            title: document.getElementById('title').value,
+            content: document.getElementById('content').value
         };
+
+        if (imageRemoved === 'true') {
+            postData.imageUrl = null;  // 이미지가 삭제된 경우 null
+        } else if (currentImageUrl) {
+            postData.imageUrl = currentImageUrl;  // 기존 이미지가 있을 경우
+        }
 
         // 이미지 파일이 있는 경우
         if (imageFile) {
             // 새 이미지 업로드
             uploadImage(imageFile)
                 .then(imageUrl => {
-                    formData.append('imageUrl', imageUrl);
-                    return updatePostRequest(postId, formData);
+                    postData.imageUrl = imageUrl;  // 업로드된 이미지 URL 추가
+                    return updatePostRequest(postId, postData);
                 })
-                .catch(error => console.error('Error:', error));
-
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('spinner').classList.add('spinner-hidden');
+                });
         } else {
             // 이미지 파일이 없는 경우
-            updatePostRequest(postId, formData);
+            updatePostRequest(postId, postData);
         }
 
         return false;
@@ -174,26 +174,20 @@
             body: imageFormData
         })
             .then(response => response.text())
-            .then(data => {
-                return data;
-                document.getElementById('spinner').classList.add('spinner-hidden');
-            })
             .catch(error => {
                 console.error('이미지 업로드 실패:', error);
-                document.getElementById('spinner').classList.add('spinner-hidden');
-
                 throw error;
             });
     }
 
-    function updatePostRequest(postId, formData) {
+    function updatePostRequest(postId, postData) {
         return fetch(`/api/posts/${postId}`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(Object.fromEntries(formData))
+            body: JSON.stringify(postData)  // postData 객체를 JSON 문자열로 변환하여 전송
         })
             .then(response => {
                 if (response.ok) {
