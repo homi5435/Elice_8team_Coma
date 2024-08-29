@@ -29,8 +29,7 @@ public class PostService {
     // create
     public PostResponseDto createPost(Post post) {
         Post saved = postRepository.save(post);
-        PostResponseDto postResponseDto = postMapper.toResponseDto(saved);
-        return postResponseDto;
+        return postMapper.toResponseDto(saved);
     }
 
     // update
@@ -46,33 +45,31 @@ public class PostService {
     // postId로 Post 가져오기
     public PostResponseDto findPost(Integer postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NoSuchElementException());
-        PostResponseDto postResponseDto = postMapper.toResponseDto(post);
-        return postResponseDto;
+                .orElseThrow(NoSuchElementException::new);
+        return postMapper.toResponseDto(post);
     }
 
     // 특정 게시판의 모든 포스트 가져오기
     public List<PostResponseDto> findAll(Long boardId) {
 
         List<Post> posts = postRepository.findAll(boardId);
-        List<PostResponseDto> postResponseDtos = posts.stream()
-                .map(post -> postMapper.toResponseDto(post))
+        return posts.stream()
+                .map(postMapper::toResponseDto)
                 .collect(Collectors.toList());
-        return postResponseDtos;
     }
 
     // Id 이용해서 Post 삭제
     public void deletePost(Integer postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException());
+        Post post = postRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         postRepository.delete(post);
     }
 
+    // 키워드를 통한 게시글 검색
     public List<PostResponseDto> findByKeyword(Long boardId, String keyword) {
         List<Post> posts = postRepository.findByKeyword(boardId, keyword);
-        List<PostResponseDto> postResponseDtos = posts.stream()
-                .map(post -> postMapper.toResponseDto(post))
+        return posts.stream()
+                .map(postMapper::toResponseDto)
                 .collect(Collectors.toList());
-        return postResponseDtos;
     }
 
     // 페이지네이션 적용
@@ -87,13 +84,7 @@ public class PostService {
 
     // 키워드 이용 검색 - 페이지네이션 적용
     public Page<PostResponseDto> findByKeywordWithPagination(Long boardId, String keyword, Pageable pageable) {
-//        List<Post> posts = postRepository.findByKeywordWithPagination(boardId, keyword, page, size );
-//        List<PostResponseDto> postResponseDtos = posts.stream()
-//                .map(post -> postMapper.toResponseDto(post))
-//                .collect(Collectors.toList());
-//        int totalPosts = postRepository.countPostsInSearchResult(boardId, keyword);
-//        int totalPages = (int) Math.ceil((double) totalPosts / size);
-//        return new Page<>(postResponseDtos, page, size, totalPosts, totalPages);
+
         Page<Post> searchResults = postRepository.findByKeywordWithPagination(boardId, keyword, pageable);
         List<PostResponseDto> searchResultsList = searchResults.getContent().stream()
                 .map(postMapper::toResponseDto)

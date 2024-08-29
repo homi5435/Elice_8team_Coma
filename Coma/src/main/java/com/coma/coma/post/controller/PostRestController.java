@@ -1,5 +1,6 @@
 package com.coma.coma.post.controller;
 
+import com.coma.coma.common.controller.ImageRestController;
 import com.coma.coma.post.dto.PostResponseDto;
 import com.coma.coma.post.entity.Post;
 import com.coma.coma.post.dto.PostRequestDto;
@@ -22,11 +23,13 @@ public class PostRestController {
     private final PostService postService;
     private final PostMapper postMapper;
     private final PostSecurityService postSecurityService;
+    private final ImageRestController imageRestController;
 
-    public PostRestController(PostService postService, PostMapper postMapper, PostSecurityService postSecurityService) {
+    public PostRestController(PostService postService, PostMapper postMapper, PostSecurityService postSecurityService, ImageRestController imageRestController) {
         this.postService = postService;
         this.postMapper = postMapper;
         this.postSecurityService = postSecurityService;
+        this.imageRestController = imageRestController;
     }
 
     // 게시물 생성
@@ -40,6 +43,7 @@ public class PostRestController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Post post = postMapper.toEntity(postRequestDto);
+
         // 현재 로그인한 유저의 id를 Post 객체에 설정
         post.setUserId(customUserDetails.getUserId());
         // 현재 로그인한 유저의 group id를 Post 객체에 설정
@@ -64,12 +68,26 @@ public class PostRestController {
     }
 
     // 게시물 삭제
-    @PreAuthorize("postSecurityService.isPostOwner(#postId, #customUserDetails.userId) or #customUserDetails.groupId == 1")
+    @PreAuthorize("postSecurityService.isPostOwner(#postId, #customUserDetails.userId) or postSecurityService.isAdmin(#customUserDetails.groupId)")
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable("postId") Integer postId,
                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
+        // 게시물 조회
+        PostResponseDto postResponseDto = postService.findPost(postId);
+
+        if (postResponseDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // 게시물의 이미지 URL 가져오기
+        String imageUrl = postResponseDto.getImageUrl();
+
         postService.deletePost(postId);
+
+        if(imageUrl != null && !imageUrl.isEmpty()) {
+            imageRestController.deleteImage(imageUrl, customUserDetails);
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

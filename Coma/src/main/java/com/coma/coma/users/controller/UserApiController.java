@@ -4,7 +4,6 @@ import com.coma.coma.security.JwtUtil;
 import com.coma.coma.users.dto.*;
 import com.coma.coma.users.service.UserService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -95,6 +96,17 @@ public class UserApiController {
     public ResponseEntity<Boolean> checkDuplicateId(@PathVariable String id) {
         boolean isDuplicate = userService.checkDuplicateId(id);
         return ResponseEntity.ok(isDuplicate);
+    }
+
+    @PostMapping("/reset-password")
+    @ResponseBody
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            userService.resetPassword(request.get("id"), request.get("phoneNumber"), request.get("newPassword"));
+            return ResponseEntity.ok("비밀번호가 성공적으로 재설정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
 }

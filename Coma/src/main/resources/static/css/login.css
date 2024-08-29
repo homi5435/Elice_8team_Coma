@@ -59,18 +59,13 @@ body {
     background-color: #0056b3;
 }
 
-.forgot-password {
-    margin-top: 1rem;
-    font-size: 0.875rem;
-    text-align: right;
-}
 
-.forgot-password a {
+.find-password a {
     color: #007bff;
     text-decoration: none;
 }
 
-.forgot-password a:hover {
+.find-password a:hover {
     text-decoration: underline;
 }
 
@@ -87,3 +82,9 @@ body {
 .signup-link a:hover {
     text-decoration: underline;
 }
+.find-password {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    text-align: right;
+}
+

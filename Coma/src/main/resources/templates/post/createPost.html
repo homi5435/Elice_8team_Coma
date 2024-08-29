@@ -18,6 +18,18 @@
       body {
           font-family: "Elice DX Neolli", sans-serif;
       }
+      /* 스피너 위치 중앙 정렬 */
+      .spinner-container {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1050; /* 부트스트랩의 모달보다 높은 z-index */
+      }
+      .spinner-hidden {
+          display: none;
+      }
+
   </style>
   <title>게시글 추가</title>
 </head>
@@ -48,7 +60,19 @@
           name="content"
           placeholder="내용 입력"
           style="height: 600px"
+          required
       ></textarea>
+    </div>
+    <!-- 이미지 파일 추가 -->
+    <div class="mb-3">
+      <label for="image">이미지 파일 업로드</label>
+      <input
+          type="file"
+          class="form-control"
+          id="image"
+          name="image"
+          accept="image/*"
+      />
     </div>
     <button type="submit" class="btn btn-primary">업로드</button>
     <button
@@ -59,6 +83,13 @@
       취소
     </button>
   </form>
+</div>
+
+<!-- 부트스트랩 스피너 -->
+<div id="spinner" class="spinner-container spinner-hidden">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
 </div>
 
 <!-- 부트스트랩 JS 추가 -->
@@ -74,28 +105,64 @@
         const boardId = document.getElementById('boardId').value;
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
+        const imageFile = document.getElementById('image').files[0];
+
+        document.getElementById('spinner').classList.remove('spinner-hidden');
+
+
+        // 이미지 파일이 선택된 경우
+        if (imageFile) {
+            // 이미지 파일을 업로드
+            const formData = new FormData();
+            formData.append('file', imageFile);
+
+            fetch('/api/images', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    // 업로드가 성공하면, 받은 URL로 게시글을 작성
+                    createPost(boardId, title, content, data);
+                })
+                .catch(error => {
+                    console.error('이미지 업로드 실패:', error);
+                    document.getElementById('spinner').classList.add('spinner-hidden');
+
+                });
+        } else {
+            // 이미지 파일이 없는 경우, 게시글만 작성
+            createPost(boardId, title, content);
+        }
+    });
+
+    function createPost(boardId, title, content, imageUrl = null) {
+        const postRequest = { title, content };
+        if (imageUrl) {
+            postRequest.imageUrl = imageUrl;
+        }
 
         fetch(`/api/posts/${boardId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title, content })
+            body: JSON.stringify(postRequest)
         })
             .then(response => {
                 if (response.ok) {
-                    // 성공적으로 게시글이 생성되면 게시물 목록 페이지로 리다이렉트
                     window.location.href = `/page/posts/list/${boardId}`;
                 } else {
-                    // 오류 처리
                     console.error('게시글 작성에 실패했습니다.');
+                    document.getElementById('spinner').classList.add('spinner-hidden');
                 }
             })
             .catch(error => {
-                // 네트워크 오류 처리
                 console.error('Error:', error);
+                document.getElementById('spinner').classList.add('spinner-hidden');
+
             });
-    });
+    }
 </script>
 </body>
 </html>
