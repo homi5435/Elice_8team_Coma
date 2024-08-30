@@ -19,7 +19,7 @@ COMA는 개발자를 위한 커뮤니티 플랫폼으로, 사용자들이 다양
 - **Backend**: Spring Boot
 - **Database**: MySQL
 - **Security**: Spring Security, JWT(JSON Web Token)
-- **DevOps**: Docker, AWS (EC2, S3, RDS)
+- **DevOps**: AWS (EC2, S3, RDS)
 
 ## 주요 기능
 - **사용자**: 회원가입, 로그인, 로그아웃, 휴대폰 인증
