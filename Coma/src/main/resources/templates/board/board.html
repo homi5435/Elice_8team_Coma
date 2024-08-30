@@ -79,7 +79,7 @@
         th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}">
     </span>
   </div>
-  <div class="w-100 d-flex justify-content-center">
+  <div class="w-100 d-flex justify-content-center" th:if="${totalPages}>0">
     <ul class="pagination">
       <!-- Previous Page Link -->
       <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
@@ -104,7 +104,7 @@
            th:text="'다음 &raquo;'"/>
       </li>
     </ul>
-  </div></div>
+
 
 <!-- 부트스트랩 JS 추가 -->
 <script
